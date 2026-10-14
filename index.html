@@ -5,131 +5,274 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Légion des Anciens - WoW: Forever</title>
     <style>
-        /* =========================================
-           GLOBAL & PALETTE WOW
-        ========================================= */
         :root {
-            /* Couleurs de fond */
-            --wow-bg: #050505; /* Noir acier profond */
-            --wow-panel-bg: rgba(20, 20, 20, 0.95); /* Anthracite biseauté */
-            
-            /* Couleurs d'accentuation */
-            --wow-gold: #d4af37; /* Or Royal */
-            --wow-gold-dim: #9c7c25; /* Or Vieilli */
-            --wow-gold-bright: #f1e0ac; /* Or Brillant */
-            
-            --wow-blue-light: #4ecdc4; /* Bleu Spectral (alliage/magie) */
-            --wow-blue: #2f89fc; /* Bleu Magique */
-            
-            /* Textes */
-            --wow-text: #e7e2d0; /* Parchemin clair */
-            --wow-text-muted: #8c8371; /* Pierre grise */
-            
-            /* Bordures & Ombres */
-            --wow-border-gold: 2px solid #5a4a2a; /* Bordure métallique biseautée */
-            --wow-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-            --wow-glow-gold: 0 0 15px rgba(212, 175, 55, 0.3);
-            
-            /* Polices (Simulées épiques) */
-            --wow-font-serif: 'Cinzel', serif; /* Épique/Ancien */
-            --wow-font-sans: 'Open Sans', sans-serif; /* Standard WoW */
+            --bg-dark: #0c0d0e;
+            --panel-bg: #16181a;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --blue-glow: #2f89fc;
+            --text-main: #e0d8c3;
+            --text-muted: #9a9383;
+            --border-gold: #4a3f28;
+            --status-open: #2ec4b6;
+            --status-closed: #e71d36;
         }
-
-        /* Police Épique optionnelle - Vous pouvez commenter si vous ne l'aimez pas */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Open+Sans:wght@400;600&display=swap');
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--wow-bg);
-            background-image: url('https://www.transparenttextures.com/patterns/dark-metal.png'); /* Texture métal sombre */
-            color: var(--wow-text);
-            font-family: var(--wow-font-sans);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        a {
-            text-decoration: none;
-            color: var(--wow-blue-light);
-            transition: color 0.3s ease;
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(12, 13, 14, 1)), 
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            padding: 90px 20px 60px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-gold);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.8);
         }
 
-        a:hover {
-            color: var(--wow-gold-bright);
-        }
-
-        h1, h2, h3 {
-            font-family: var(--wow-font-serif);
-            font-weight: 700;
+        header h1 {
+            font-size: 3.2rem;
+            color: var(--gold-light);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        /* =========================================
-           HEADER (HERO SECTION) ÉPIQUE
-        ========================================= */
-        header {
-            position: relative;
-            height: 80vh; /* Grand en-tête immersif */
-            width: 100%;
-            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(5, 5, 5, 1)), 
-                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            border-bottom: 3px solid #5a4a2a; /* Bordure dorée épaisse */
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
-            padding: 0 20px;
-        }
-
-        /* Incrustation d'ombrage pour le texte */
-        header .overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 1;
-        }
-
-        header .content {
-            position: relative;
-            z-index: 2;
-        }
-
-        header h1 {
-            font-size: 4.5rem;
-            color: var(--wow-gold-bright);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8),
-                         0 0 50px rgba(212, 175, 55, 0.4);
-            margin-bottom: 15px;
-        }
-
         header p {
-            font-size: 1.6rem;
-            color: var(--wow-text-muted);
-            font-family: var(--wow-font-serif);
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
         }
 
-        /* Bouton Épique */
-        .btn-join {
+        .btn-discord {
             display: inline-block;
-            background: linear-gradient(135deg, #2f89fc, #1e56a0); /* Bleu Royal */
-            color: white;
-            font-family: var(--wow-font-serif);
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 1.3rem;
-            padding: 18px 45px;
+            background: linear-gradient(135deg, #2f89fc, #1e56a0);
+            color: #ffffff;
+            padding: 14px 32px;
             border-radius: 4px;
-            border: 2px solid var(--wow-gold-dim); /* Bordure or vie
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 15px rgba(47, 137, 252, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-discord:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+            border-color: var(--gold-light);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        section {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 6px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h2 {
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-gold);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .recruitment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .role-card {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #2a251a;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .status.open {
+            background-color: rgba(46, 196, 182, 0.15);
+            color: var(--status-open);
+            border: 1px solid var(--status-open);
+        }
+
+        .status.closed {
+            background-color: rgba(231, 29, 54, 0.15);
+            color: var(--status-closed);
+            border: 1px solid var(--status-closed);
+        }
+
+        .schedule {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .schedule li {
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border-gold);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .schedule li strong {
+            color: var(--gold-light);
+        }
+
+        .news-item {
+            border-left: 3px solid var(--blue-glow);
+            background: rgba(47, 137, 252, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .news-date {
+            color: var(--blue-glow);
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-gold);
+            margin-top: 50px;
+            background-color: var(--panel-bg);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>La Légion des Anciens</h1>
+        <p>Guilde PVE & Communauté — WoW: Forever</p>
+        <a href="https://discord.gg/votre-lien" target="_blank" class="btn-discord">Rejoindre le Discord</a>
+    </header>
+
+    <div class="container">
+
+        <main>
+            <section id="a-propos">
+                <h2>L'Esprit des Anciens</h2>
+                <p>Bienvenue sur le portail de <strong>La Légion des Anciens</strong>. Nous sommes une communauté passionnée de <em>World of Warcraft</em> évoluant sur le serveur <strong>WoW: Forever</strong>.</p>
+                <p>Notre guilde rassemble des joueurs désirant avancer dans le contenu PVE dans une ambiance conviviale, structurée et bienveillante.</p>
+            </section>
+
+            <section id="recrutement" style="margin-top: 30px;">
+                <h2>Statut du Recrutement</h2>
+                <p>Nous recherchons actuellement pour compléter notre roster :</p>
+                
+                <div class="recruitment-grid">
+                    <div class="role-card">
+                        <span>🛡️ Tanks</span>
+                        <span class="status closed">Fermé</span>
+                    </div>
+                    <div class="role-card">
+                        <span>💚 Soigneurs</span>
+                        <span class="status open">Ouvert</span>
+                    </div>
+                    <div class="role-card">
+                        <span>⚔️ DPS Mêlée</span>
+                        <span class="status open">Ouvert</span>
+                    </div>
+                    <div class="role-card">
+                        <span>🏹 DPS Distance</span>
+                        <span class="status open">Ouvert</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <aside>
+            <section id="organisation">
+                <h2>Organisation Raids</h2>
+                <ul class="schedule">
+                    <li>
+                        <span>Soirs de Raid :</span>
+                        <strong>Mer. & Dim.</strong>
+                    </li>
+                    <li>
+                        <span>Horaires :</span>
+                        <strong>20h45 - 23h30</strong>
+                    </li>
+                    <li>
+                        <span>Format :</span>
+                        <strong>Raid Roster 25</strong>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="annonces" style="margin-top: 30px;">
+                <h2>Annonces</h2>
+                <div class="news-item">
+                    <span class="news-date">14 Octobre 2026</span>
+                    Ouverture officielle du portail web de la guilde !
+                </div>
+            </section>
+        </aside>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 La Légion des Anciens — World of Warcraft: Forever</p>
+    </footer>
+
+</body>
+</html>
