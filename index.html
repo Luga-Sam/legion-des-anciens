@@ -396,8 +396,7 @@ dialog.large{width:min(920px,100% - 1.5rem)}
   <button class="fermer" type="button" aria-label="Fermer" id="fermer">&times;</button>
   <h2 id="modal-titre">Postuler</h2>
   <p class="intro" style="margin-bottom:0">Dites-nous qui vous êtes. Un officier vous répondra sur Discord.</p>
-  <form id="form" name="candidature" method="POST" action="/" data-netlify="true" netlify-honeypot="bot-field">
-    <input type="hidden" name="form-name" value="candidature">
+  <form id="form" novalidate>
     <p class="hp"><label>Ne pas remplir <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
     <label for="pseudo">Pseudo WoW
@@ -411,6 +410,9 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 
     <label for="discord">Tag Discord
       <input id="discord" name="discord" required maxlength="40" placeholder="pseudo" autocomplete="off"></label>
+
+    <label for="experience">Âge et expérience de jeu
+      <input id="experience" name="experience" required maxlength="120" placeholder="Ex : 34 ans, joueur depuis Vanilla" autocomplete="off"></label>
 
     <label for="presentation-txt">Présentez-vous en quelques mots
       <textarea id="presentation-txt" name="presentation" required maxlength="1000" placeholder="Votre expérience, vos disponibilités, ce que vous cherchez dans une guilde…"></textarea></label>
@@ -579,19 +581,23 @@ modal.addEventListener("click", e => { if(e.target === modal) modal.close(); });
 
 $("#form").addEventListener("submit", async e => {
   e.preventDefault();
-  const f = e.target, retour = $("#retour");
+  const f = e.target, retour = $("#retour"), bouton = f.querySelector("button[type=submit]");
+  if(!f.reportValidity()) return;
+  const lienDiscord = `<a href="${LIEN_DISCORD}" target="_blank" rel="noopener">notre Discord</a>`;
+  bouton.disabled = true; bouton.textContent = "Envoi en cours…";
   try{
-    const r = await fetch("/", {
+    const r = await fetch("/api/candidature", {
       method:"POST",
-      headers:{ "Content-Type":"application/x-www-form-urlencoded" },
-      body:new URLSearchParams(new FormData(f)).toString()
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(Object.fromEntries(new FormData(f)))
     });
     if(!r.ok) throw new Error();
     f.reset(); selClasse.onchange();
-    retour.innerHTML = '<div class="msg">Candidature envoyée. Un officier vous contactera sur Discord.</div>';
+    retour.innerHTML = `<div class="msg">Votre candidature a bien été transmise à l’équipe ! Rendez-vous sur ${lienDiscord}.</div>`;
   }catch{
-    retour.innerHTML = '<div class="msg err">L’envoi a échoué. Réessayez, ou contactez-nous directement sur Discord.</div>';
+    retour.innerHTML = `<div class="msg err">L’envoi a échoué. Pas de panique : rejoignez directement ${lienDiscord} et présentez-vous à l’équipe de recrutement.</div>`;
   }
+  bouton.disabled = false; bouton.textContent = "Envoyer ma candidature";
 });
 
 /* Lecteur de l'hymne */
