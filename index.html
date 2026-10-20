@@ -178,8 +178,15 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 .lecteur{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:30;display:flex;align-items:center;gap:.7rem;padding:.45rem .95rem .45rem .45rem;background:rgba(12,18,15,.92);backdrop-filter:blur(8px);border:1px solid var(--or);border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.65),0 0 18px rgba(201,162,75,.2)}
 .l-play{width:2.7rem;height:2.7rem;flex:none;border-radius:50%;border:1px solid #f0cf86;background:linear-gradient(#e0b45c,#b8731f);color:#1a1002;display:grid;place-items:center;cursor:pointer}
 .l-play svg,.l-mute svg{width:1.25rem;height:1.25rem;fill:currentColor}
-.l-play .i-pause,.lecteur.joue .l-play .i-play{display:none}
-.lecteur.joue .l-play .i-pause{display:block}
+.ondes{display:none;align-items:center;gap:2px;height:1.2rem}
+.ondes i{width:3px;height:30%;border-radius:2px;background:#1a1002;animation:onde 1s ease-in-out infinite}
+.ondes i:nth-child(2){animation-delay:.2s}
+.ondes i:nth-child(3){animation-delay:.4s}
+.ondes i:nth-child(4){animation-delay:.6s}
+@keyframes onde{0%,100%{height:25%}50%{height:100%}}
+.lecteur.joue .l-play .i-off{display:none}
+.lecteur.joue .ondes{display:flex}
+.lecteur.muet .ondes i{animation-play-state:paused;height:40%}
 .lecteur.attente .l-play{animation:pulse 1.8s ease-out infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,130,43,.7)}100%{box-shadow:0 0 0 .9rem rgba(217,130,43,0)}}
 .l-txt{display:flex;flex-direction:column;line-height:1.2}
@@ -191,12 +198,6 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 .lecteur.muet .l-mute .i-off{display:block}
 .lecteur input{width:86px;margin:0;padding:0;background:none;border:0;accent-color:var(--or);cursor:pointer}
 .lecteur input:focus{box-shadow:none}
-.eq{display:none;align-items:flex-end;gap:2px;height:.9rem}
-.lecteur.joue .eq{display:flex}
-.eq i{width:3px;background:var(--forge);animation:eq 1s ease-in-out infinite}
-.eq i:nth-child(2){animation-delay:.25s;background:var(--hurle)}
-.eq i:nth-child(3){animation-delay:.5s;background:var(--elfe)}
-@keyframes eq{0%,100%{height:25%}50%{height:100%}}
 @media(max-width:520px){.l-txt{display:none}.lecteur{gap:.4rem}.lecteur input{width:70px}}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
@@ -376,19 +377,18 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 </dialog>
 
 <!-- Lecteur de l'hymne -->
-<audio id="hymne" loop preload="auto" playsinline></audio>
+<audio id="hymne" autoplay loop preload="auto" playsinline></audio>
 <div class="lecteur" id="lecteur" role="region" aria-label="Hymne de la Guilde">
-  <button class="l-play" id="l-play" type="button" aria-label="Lancer ou mettre en pause l’hymne">
-    <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-    <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+  <button class="l-play" id="l-play" type="button" aria-label="Lancer l’hymne">
+    <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
+    <span class="ondes" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
   </button>
   <div class="l-txt"><b>Hymne de la Guilde</b><span id="l-etat" aria-live="polite">Activer le son</span></div>
-  <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
   <button class="l-mute" id="l-mute" type="button" aria-label="Couper ou activer le son">
     <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
     <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></svg>
   </button>
-  <input id="l-vol" type="range" min="0" max="1" step="0.05" value="0.35" aria-label="Volume de l’hymne">
+  <input id="l-vol" type="range" min="0" max="1" step="0.05" value="0.4" aria-label="Volume de l’hymne">
 </div>
 
 <!-- Formulaire de candidature -->
@@ -431,7 +431,7 @@ const LIEN_DISCORD = "https://discord.com/invite/ks68MWK756";
 // 1 bis. Hymne de la guilde : chemin du fichier MP3, volume de départ (0 à 1)
 //        et tentative de lancement automatique (true / false)
 const FICHIER_HYMNE = "hymne-legion.mp3";
-const VOLUME_DEPART = 0.35;
+const VOLUME_DEPART = 0.4;
 const LANCER_AUTO   = true;
 
 // 2. Besoins de recrutement (valeurs de départ : ensuite gérées depuis l’Espace Officier)
@@ -596,6 +596,7 @@ $("#form").addEventListener("submit", async e => {
 
 /* Lecteur de l'hymne */
 const hymne = $("#hymne"), lec = $("#lecteur"), etatLec = $("#l-etat"), vol = $("#l-vol");
+hymne.volume = 0;               // départ silencieux, puis montée en douceur
 hymne.src = FICHIER_HYMNE;
 vol.value = VOLUME_DEPART;
 let cible = VOLUME_DEPART, minuteur, bloque = false;
@@ -615,19 +616,34 @@ function majLecteur(){
   lec.classList.toggle("joue", joue);
   lec.classList.toggle("attente", bloque && !joue);
   lec.classList.toggle("muet", hymne.muted || cible === 0);
-  etatLec.textContent = joue ? "En lecture" : bloque ? "Cliquez pour activer le son" : "En pause";
+  etatLec.textContent = joue ? (lec.classList.contains("muet") ? "Son coupé" : "En lecture") : bloque ? "Cliquez pour lancer" : "Musique arrêtée";
+  $("#l-play").setAttribute("aria-label", joue ? "Arrêter l’hymne" : "Lancer l’hymne");
+  $("#l-play").title = joue ? "Arrêter la musique" : "Lancer la musique";
 }
 async function lancer(){
+  let ok = false;
   try{
-    hymne.volume = 0;
+    if(hymne.paused) hymne.volume = 0;
     await hymne.play();
-    bloque = false;
+    bloque = false; ok = true;
     fondu(cible);          // montée du son en douceur
+    desarmer();
   }catch{
     bloque = true;         // le navigateur bloque la lecture automatique
   }
   majLecteur();
+  return ok;
 }
+
+// Sécurité : si le navigateur bloque la lecture au chargement, la musique démarre
+// dès le premier clic ou toucher du visiteur, n'importe où sur le site.
+const PREMIERS_GESTES = ["pointerdown", "pointerup", "click", "touchend"];
+function premierGeste(e){
+  if(e.target.closest && e.target.closest("#l-play")) return;   // le bouton gère lui-même son clic
+  lancer();
+}
+function armer(){ PREMIERS_GESTES.forEach(t => window.addEventListener(t, premierGeste, true)); }
+function desarmer(){ PREMIERS_GESTES.forEach(t => window.removeEventListener(t, premierGeste, true)); }
 $("#l-play").onclick = () => hymne.paused ? lancer() : hymne.pause();
 $("#l-mute").onclick = () => {
   if(cible === 0){ cible = VOLUME_DEPART; vol.value = cible; hymne.volume = cible; hymne.muted = false; }
@@ -642,7 +658,7 @@ vol.oninput = () => {
 };
 hymne.addEventListener("play", majLecteur);
 hymne.addEventListener("pause", majLecteur);
-if(LANCER_AUTO) lancer(); else { bloque = true; majLecteur(); }
+if(LANCER_AUTO){ armer(); lancer(); } else { bloque = true; majLecteur(); }
 
 /* Espace Officier */
 const adm = $("#admin"), login = $("#login"), tableau = $("#tableau");
