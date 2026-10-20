@@ -8,7 +8,7 @@
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --fond:#0c120f; --pierre:#161e1a; --pierre2:#1f2924; --ligne:#3a3a2c;
@@ -62,8 +62,16 @@ nav a:hover{color:var(--or-clair)}
 @keyframes tourne{to{rotate:360deg}}
 .hero .wrap{position:relative;z-index:1;animation:apparait 1.4s ease-out both}
 @keyframes apparait{from{opacity:0;translate:0 14px}}
-.hero h1{font-size:clamp(2.6rem,9vw,6.2rem);font-weight:900;letter-spacing:.03em;text-shadow:0 2px 18px rgba(0,0,0,.85),0 0 40px rgba(201,162,75,.35)}
-.hero p{text-shadow:0 2px 10px rgba(0,0,0,.9);font-size:clamp(1.15rem,3vw,1.6rem);color:var(--or);margin:1.2rem 0 2.4rem;font-family:var(--titre);letter-spacing:.08em}
+.hero h1{font-family:"Cinzel Decorative","Cinzel",Georgia,serif;font-weight:900;text-transform:uppercase;letter-spacing:.1em;
+  font-size:clamp(2.1rem,7.2vw,5.4rem);line-height:1.12;text-wrap:balance;padding:.05em 0;
+  /* métal doré : crème en haut, or au milieu, bronze chaud en bas */
+  background:linear-gradient(180deg,#fffaf0 0%,#f6e6b8 28%,#d9b45a 55%,#b07a2a 80%,#7a4a17 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  /* ombre sombre prononcée + halo doré (drop-shadow, car text-shadow est masqué par le dégradé) */
+  filter:drop-shadow(0 3px 1px rgba(0,0,0,.95)) drop-shadow(0 6px 14px rgba(0,0,0,.8)) drop-shadow(0 0 22px rgba(224,180,92,.45))}
+.hero p{text-shadow:0 2px 10px rgba(0,0,0,.95);font:500 clamp(.9rem,2.4vw,1.3rem) var(--titre);color:var(--or-clair);text-transform:uppercase;letter-spacing:.3em;margin:1.4rem 0 2.6rem}
+.hero p::before,.hero p::after{content:"";display:inline-block;width:clamp(1.5rem,6vw,3.5rem);height:1px;vertical-align:middle;margin:0 .9rem 0 0;background:linear-gradient(90deg,transparent,var(--or))}
+.hero p::after{margin:0 0 0 .6rem;background:linear-gradient(270deg,transparent,var(--or))}
 .hero .actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
 /* Présentation */
