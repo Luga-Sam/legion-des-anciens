@@ -553,7 +553,7 @@ function dessinerAnnonce(){
 function toutDessiner(){ dessinerAnnonce(); dessiner(); dessinerRaids(); }
 toutDessiner();
 
-// Récupère ce que les officiers ont enregistré (ne fonctionne qu'une fois le site en ligne sur Netlify)
+// Récupère ce que les officiers ont enregistré (ne fonctionne qu'une fois le site en ligne sur Cloudflare Pages)
 fetch("/api/data", { cache:"no-store" })
   .then(r => r.ok ? r.json() : null)
   .then(d => { if(d && Object.keys(d).length){ appliquer(d); toutDessiner(); } })
@@ -585,17 +585,22 @@ $("#form").addEventListener("submit", async e => {
   if(!f.reportValidity()) return;
   const lienDiscord = `<a href="${LIEN_DISCORD}" target="_blank" rel="noopener">notre Discord</a>`;
   bouton.disabled = true; bouton.textContent = "Envoi en cours…";
+  let detail = "Serveur injoignable";
   try{
     const r = await fetch("/api/candidature", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify(Object.fromEntries(new FormData(f)))
     });
-    if(!r.ok) throw new Error();
+    if(!r.ok){
+      let m = ""; try{ m = (await r.json()).erreur || ""; }catch{}
+      detail = "Code " + r.status + (m ? " : " + m : "");
+      throw new Error();
+    }
     f.reset(); selClasse.onchange();
     retour.innerHTML = `<div class="msg">Votre candidature a bien été transmise à l’équipe ! Rendez-vous sur ${lienDiscord}.</div>`;
   }catch{
-    retour.innerHTML = `<div class="msg err">L’envoi a échoué. Pas de panique : rejoignez directement ${lienDiscord} et présentez-vous à l’équipe de recrutement.</div>`;
+    retour.innerHTML = `<div class="msg err">L’envoi a échoué. Pas de panique : rejoignez directement ${lienDiscord} et présentez-vous à l’équipe de recrutement.<br><small>Détail technique (pour les officiers) : ${esc(detail)}</small></div>`;
   }
   bouton.disabled = false; bouton.textContent = "Envoyer ma candidature";
 });
@@ -746,7 +751,7 @@ login.addEventListener("submit", async e => {
       retour.innerHTML = `<div class="msg err">${esc(r.statut === 401 ? "Code incorrect." : r.erreur || "Connexion impossible.")}</div>`;
     }
   }catch{
-    retour.innerHTML = '<div class="msg err">Serveur injoignable. L’Espace Officier ne fonctionne qu’une fois le site en ligne sur Netlify.</div>';
+    retour.innerHTML = '<div class="msg err">Serveur injoignable. L’Espace Officier ne fonctionne qu’une fois le site en ligne sur Cloudflare Pages.</div>';
   }
 });
 
