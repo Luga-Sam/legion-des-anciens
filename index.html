@@ -146,6 +146,34 @@ form .btn{margin-top:1.6rem;width:100%}
 .msg{margin-top:1rem;padding:.9rem 1rem;border-left:3px solid var(--fel);background:rgba(47,122,87,.15)}
 .msg.err{border-color:var(--rouge);background:rgba(181,82,63,.15)}
 
+/* Annonce */
+.annonce{background:linear-gradient(90deg,rgba(138,107,196,.28),rgba(61,111,196,.28),rgba(217,130,43,.3));border-bottom:1px solid var(--or);padding:.8rem 0;text-align:center}
+.annonce[hidden]{display:none}
+.annonce strong{font-family:var(--titre);color:var(--or-clair);margin-right:.6rem;letter-spacing:.05em}
+.specs{list-style:none;padding:0;display:grid;gap:.25rem;font-size:.92rem;margin:.2rem 0 .6rem}
+.specs li{display:flex;justify-content:space-between;gap:.5rem}
+.specs em{font-style:normal;color:var(--doux)}
+.sp-prio em{color:var(--forge);font-weight:700}
+.sp-ouvert em{color:#6fcf9b}
+footer{padding-bottom:5.5rem}
+.l-officier{background:none;border:0;color:var(--doux);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+.l-officier:hover{color:var(--or-clair)}
+
+/* Espace Officier */
+dialog.large{width:min(920px,100% - 1.5rem)}
+.admin-barre{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin:1rem 0;padding-bottom:1rem;border-bottom:1px solid var(--ligne)}
+.petit{padding:.5rem 1rem!important;font-size:.82rem!important}
+#tableau h3{margin:1.8rem 0 .8rem;font-size:1.3rem}
+.a-classe{border:1px solid var(--ligne);border-left:3px solid var(--cl);padding:.8rem 1rem 1rem;margin-bottom:.8rem}
+.a-classe legend{font:700 1rem var(--titre);color:var(--cl);padding:0 .4rem}
+.a-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem}
+.a-classe label,.a-raid label{margin-top:.5rem;font-size:.92rem}
+.a-raid{display:grid;grid-template-columns:2fr .7fr .7fr 1fr;gap:.2rem .7rem;border:1px solid var(--ligne);padding:.8rem 1rem 1rem;margin-bottom:.8rem}
+.a-raid .pleine{grid-column:1/-1}
+@media(max-width:640px){.a-raid{grid-template-columns:1fr 1fr}.a-raid .nom{grid-column:1/-1}}
+.admin-pied{position:sticky;bottom:-2rem;background:var(--pierre);padding:1rem 0;border-top:1px solid var(--ligne);margin-top:1.5rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.admin-pied .msg{margin:0;flex:1}
+
 /* Lecteur de l'hymne */
 .lecteur{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:30;display:flex;align-items:center;gap:.7rem;padding:.45rem .95rem .45rem .45rem;background:rgba(12,18,15,.92);backdrop-filter:blur(8px);border:1px solid var(--or);border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.65),0 0 18px rgba(201,162,75,.2)}
 .l-play{width:2.7rem;height:2.7rem;flex:none;border-radius:50%;border:1px solid #f0cf86;background:linear-gradient(#e0b45c,#b8731f);color:#1a1002;display:grid;place-items:center;cursor:pointer}
@@ -187,6 +215,8 @@ form .btn{margin-top:1.6rem;width:100%}
     </nav>
   </div>
 </header>
+
+<div class="annonce" id="annonce" hidden><div class="wrap"><strong>Annonce</strong><span id="annonce-txt"></span></div></div>
 
 <main id="haut">
   <section class="hero" aria-label="Accueil">
@@ -308,8 +338,42 @@ form .btn{margin-top:1.6rem;width:100%}
   <div class="wrap">
     <span>© 2026 La Légion des Anciens. Guilde indépendante, non affiliée à Blizzard Entertainment.</span>
     <a class="js-discord" href="#" target="_blank" rel="noopener">Discord de la guilde</a>
+    <button type="button" class="l-officier" id="ouvrir-admin">Espace Officier</button>
   </div>
 </footer>
+
+<!-- Espace Officier -->
+<dialog id="admin" class="large" aria-labelledby="admin-titre">
+  <button class="fermer" type="button" aria-label="Fermer" id="admin-fermer">&times;</button>
+  <h2 id="admin-titre">Espace Officier</h2>
+  <form id="login">
+    <p class="intro" style="margin-bottom:0">Réservé au Maître de Guilde et aux Officiers.</p>
+    <label for="code">Code d’accès
+      <input id="code" type="password" autocomplete="current-password" required></label>
+    <button class="btn btn-or" type="submit">Se connecter</button>
+    <div id="login-retour" role="status"></div>
+  </form>
+  <div id="tableau" hidden>
+    <div class="admin-barre"><span>Connecté en tant qu’officier</span>
+      <button class="btn btn-ligne petit" type="button" id="deconnexion">Se déconnecter</button></div>
+
+    <h3>Annonce de guilde</h3>
+    <label for="a-annonce">Message affiché en bannière sur la page d’accueil (laisser vide pour ne rien afficher)
+      <textarea id="a-annonce" maxlength="300" style="min-height:80px" placeholder="Prochain raid jeudi à 20h30…"></textarea></label>
+
+    <h3>Recrutement</h3>
+    <div id="a-rec"></div>
+
+    <h3>Progression des raids</h3>
+    <div id="a-raids"></div>
+    <button class="btn btn-ligne petit" type="button" id="a-ajout">+ Ajouter un raid</button>
+
+    <div class="admin-pied">
+      <button class="btn btn-or" type="button" id="a-sauver">Sauvegarder</button>
+      <div id="a-retour" role="status"></div>
+    </div>
+  </div>
+</dialog>
 
 <!-- Lecteur de l'hymne -->
 <audio id="hymne" loop preload="auto" playsinline></audio>
@@ -370,7 +434,7 @@ const FICHIER_HYMNE = "hymne-legion.mp3";
 const VOLUME_DEPART = 0.35;
 const LANCER_AUTO   = true;
 
-// 2. Besoins de recrutement
+// 2. Besoins de recrutement (valeurs de départ : ensuite gérées depuis l’Espace Officier)
 //    statut : "ouvert", "ferme" ou "prio"   |   note : texte libre
 const CLASSES = [
   { nom:"Guerrier",           couleur:"#C79C6E", statut:"ouvert", note:"Tank principal bienvenu",
@@ -395,7 +459,7 @@ const CLASSES = [
     specs:["Équilibre","Combat farouche","Restauration"] }
 ];
 
-// 3. Progression des raids (exemples à remplacer par vos vrais chiffres)
+// 3. Progression des raids (valeurs de départ : ensuite gérées depuis l’Espace Officier)
 const RAIDS = [
   { nom:"Cœur du Magma",        tues:7, total:10, note:"En cours, fin de raid en vue." },
   { nom:"Repaire de l’Aile noire", tues:3, total:8, note:"Les premiers boss tombent." },
@@ -409,8 +473,28 @@ const RAIDS = [
 const LIBELLES = { ouvert:"Ouvert", ferme:"Fermé", prio:"Recherche prioritaire" };
 const $ = s => document.querySelector(s);
 const modal = $("#modal");
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 document.querySelectorAll(".js-discord").forEach(a => a.href = LIEN_DISCORD);
+
+/* État du site : valeurs de départ, remplacées par ce que les officiers enregistrent */
+const etat = { annonce:"", recrutement:{}, raids:[] };
+function appliquer(d){
+  etat.annonce = typeof d?.annonce === "string" ? d.annonce : "";
+  CLASSES.forEach(c => {
+    const x = d?.recrutement?.[c.nom];
+    etat.recrutement[c.nom] = {
+      note: typeof x?.note === "string" ? x.note : c.note,
+      specs: Object.fromEntries(c.specs.map(sp => [sp, LIBELLES[x?.specs?.[sp]] ? x.specs[sp] : c.statut]))
+    };
+  });
+  etat.raids = Array.isArray(d?.raids) ? d.raids : RAIDS.map(r => ({ mention:"", ...r }));
+}
+appliquer({});
+function statutClasse(nom){
+  const v = Object.values(etat.recrutement[nom].specs);
+  return v.includes("prio") ? "prio" : v.includes("ouvert") ? "ouvert" : "ferme";
+}
 
 /* Recrutement */
 let filtre = "tous";
@@ -431,32 +515,49 @@ filtres.forEach(([cle, texte]) => {
 function dessiner(){
   const g = $("#grille");
   g.innerHTML = "";
-  CLASSES.filter(c => filtre === "tous" || c.statut === filtre).forEach(c => {
+  CLASSES.forEach(c => {
+    const st = statutClasse(c.nom), e = etat.recrutement[c.nom];
+    if(filtre !== "tous" && st !== filtre) return;
     const el = document.createElement("article");
-    el.className = "carte" + (c.statut === "prio" ? " is-prio" : "");
-    el.dataset.s = c.statut;
+    el.className = "carte" + (st === "prio" ? " is-prio" : "");
+    el.dataset.s = st;
     el.style.setProperty("--cl", c.couleur);
-    const cls = { ouvert:"s-ouvert", ferme:"s-ferme", prio:"s-prio" }[c.statut];
-    el.innerHTML = `<h3></h3><span class="statut ${cls}">${LIBELLES[c.statut]}</span><small></small>
+    const cls = { ouvert:"s-ouvert", ferme:"s-ferme", prio:"s-prio" }[st];
+    el.innerHTML = `<h3>${esc(c.nom)}</h3><span class="statut ${cls}">${LIBELLES[st]}</span><small>${esc(e.note)}</small>
+      <ul class="specs">${c.specs.map(sp => `<li class="sp-${e.specs[sp]}"><span>${esc(sp)}</span><em>${LIBELLES[e.specs[sp]]}</em></li>`).join("")}</ul>
       <a href="#" class="btn btn-ligne">Postuler</a>`;
-    el.querySelector("h3").textContent = c.nom;
-    el.querySelector("small").textContent = c.note;
-    el.querySelector(".btn").onclick = e => { e.preventDefault(); ouvrir(c.nom); };
+    el.querySelector(".btn").onclick = ev => { ev.preventDefault(); ouvrir(c.nom); };
     g.append(el);
   });
   if(!g.children.length) g.innerHTML = '<p class="intro">Aucune classe dans cette catégorie pour le moment.</p>';
 }
-dessiner();
 
 /* Progression */
-$("#raids").innerHTML = RAIDS.map(r => {
-  const pct = Math.round(r.tues / r.total * 100);
-  return `<article class="raid${r.tues === r.total ? " fini" : ""}">
-    <h3>${r.nom}</h3>
-    <div class="score">${r.tues}/${r.total} <span>boss vaincus</span></div>
-    <div class="barre" role="img" aria-label="${pct} % de progression"><i style="width:${pct}%"></i></div>
-    <p>${r.note}</p></article>`;
-}).join("");
+function dessinerRaids(){
+  $("#raids").innerHTML = etat.raids.map(r => {
+    const pct = r.total ? Math.round(r.tues / r.total * 100) : 0;
+    return `<article class="raid${r.tues === r.total ? " fini" : ""}">
+      <h3>${esc(r.nom)}</h3>
+      <div class="score">${+r.tues}/${+r.total} <span>${r.mention ? esc(r.mention) + " · " : ""}boss vaincus</span></div>
+      <div class="barre" role="img" aria-label="${pct} % de progression"><i style="width:${pct}%"></i></div>
+      <p>${esc(r.note)}</p></article>`;
+  }).join("") || '<p class="intro">La progression sera bientôt affichée.</p>';
+}
+
+/* Annonce */
+function dessinerAnnonce(){
+  $("#annonce").hidden = !etat.annonce.trim();
+  $("#annonce-txt").textContent = etat.annonce;
+}
+
+function toutDessiner(){ dessinerAnnonce(); dessiner(); dessinerRaids(); }
+toutDessiner();
+
+// Récupère ce que les officiers ont enregistré (ne fonctionne qu'une fois le site en ligne sur Netlify)
+fetch("/api/data", { cache:"no-store" })
+  .then(r => r.ok ? r.json() : null)
+  .then(d => { if(d && Object.keys(d).length){ appliquer(d); toutDessiner(); } })
+  .catch(() => {});
 
 /* Formulaire */
 const selClasse = $("#classe"), selSpe = $("#spe");
@@ -496,7 +597,7 @@ $("#form").addEventListener("submit", async e => {
 });
 
 /* Lecteur de l'hymne */
-const hymne = $("#hymne"), lec = $("#lecteur"), etat = $("#l-etat"), vol = $("#l-vol");
+const hymne = $("#hymne"), lec = $("#lecteur"), etatLec = $("#l-etat"), vol = $("#l-vol");
 hymne.src = FICHIER_HYMNE;
 vol.value = VOLUME_DEPART;
 let cible = VOLUME_DEPART, minuteur, bloque = false;
@@ -516,7 +617,7 @@ function majLecteur(){
   lec.classList.toggle("joue", joue);
   lec.classList.toggle("attente", bloque && !joue);
   lec.classList.toggle("muet", hymne.muted || cible === 0);
-  etat.textContent = joue ? "En lecture" : bloque ? "Cliquez pour activer le son" : "En pause";
+  etatLec.textContent = joue ? "En lecture" : bloque ? "Cliquez pour activer le son" : "En pause";
 }
 async function lancer(){
   try{
@@ -544,6 +645,117 @@ vol.oninput = () => {
 hymne.addEventListener("play", majLecteur);
 hymne.addEventListener("pause", majLecteur);
 if(LANCER_AUTO) lancer(); else { bloque = true; majLecteur(); }
+
+/* Espace Officier */
+const adm = $("#admin"), login = $("#login"), tableau = $("#tableau");
+let codeOfficier = "";
+try{ codeOfficier = sessionStorage.getItem("legion_code") || ""; }catch{}
+
+async function api(corps){
+  const r = await fetch("/api/data", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(corps) });
+  let d = {}; try{ d = await r.json(); }catch{}
+  return { ok:r.ok, statut:r.status, erreur:d.erreur };
+}
+function afficherAdmin(connecte){
+  login.hidden = connecte; tableau.hidden = !connecte;
+  if(connecte) remplirAdmin(etat);
+}
+function optionsStatut(v){
+  return Object.entries(LIBELLES).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
+}
+function remplirAdmin(d){
+  $("#a-annonce").value = d.annonce;
+  $("#a-rec").innerHTML = CLASSES.map((c, ci) => `
+    <fieldset class="a-classe" style="--cl:${c.couleur}"><legend>${esc(c.nom)}</legend>
+      <label>Note affichée sur la carte
+        <input data-note="${ci}" maxlength="80" value="${esc(d.recrutement[c.nom].note)}"></label>
+      <div class="a-specs">${c.specs.map((sp, si) => `
+        <label>${esc(sp)}<select data-ci="${ci}" data-si="${si}">${optionsStatut(d.recrutement[c.nom].specs[sp])}</select></label>`).join("")}
+      </div></fieldset>`).join("");
+  dessinerChampsRaids(d.raids);
+}
+function dessinerChampsRaids(raids){
+  $("#a-raids").innerHTML = raids.map((r, i) => `
+    <div class="a-raid">
+      <label class="nom">Nom du raid<input data-f="nom" maxlength="60" value="${esc(r.nom)}"></label>
+      <label>Boss vaincus<input data-f="tues" type="number" min="0" max="99" value="${+r.tues}"></label>
+      <label>Total<input data-f="total" type="number" min="1" max="99" value="${+r.total}"></label>
+      <label>Mention (ex : HM)<input data-f="mention" maxlength="30" value="${esc(r.mention)}"></label>
+      <label class="pleine">Remarques / dates de chute des boss<input data-f="note" maxlength="200" value="${esc(r.note)}"></label>
+      <div class="pleine"><button class="btn btn-ligne petit" type="button" data-sup="${i}" style="margin-top:.6rem">Supprimer ce raid</button></div>
+    </div>`).join("");
+}
+function lireAdmin(){
+  const rec = {};
+  CLASSES.forEach((c, ci) => {
+    rec[c.nom] = { note:$(`[data-note="${ci}"]`).value.trim(), specs:{} };
+    c.specs.forEach((sp, si) => rec[c.nom].specs[sp] = $(`[data-ci="${ci}"][data-si="${si}"]`).value);
+  });
+  return { annonce:$("#a-annonce").value.trim(), recrutement:rec, raids:lireRaids() };
+}
+function lireRaids(){
+  return [...document.querySelectorAll(".a-raid")].map(el => {
+    const v = f => el.querySelector(`[data-f="${f}"]`).value;
+    const total = Math.max(1, Math.min(99, parseInt(v("total"), 10) || 1));
+    return { nom:v("nom").trim(), tues:Math.max(0, Math.min(total, parseInt(v("tues"), 10) || 0)), total, mention:v("mention").trim(), note:v("note").trim() };
+  });
+}
+function deconnecter(){
+  codeOfficier = "";
+  try{ sessionStorage.removeItem("legion_code"); }catch{}
+  afficherAdmin(false);
+}
+
+$("#ouvrir-admin").onclick = () => { $("#login-retour").innerHTML = ""; $("#a-retour").innerHTML = ""; afficherAdmin(!!codeOfficier); adm.showModal(); };
+$("#admin-fermer").onclick = () => adm.close();
+adm.addEventListener("click", e => { if(e.target === adm) adm.close(); });
+$("#deconnexion").onclick = () => { deconnecter(); adm.close(); };
+
+login.addEventListener("submit", async e => {
+  e.preventDefault();
+  const retour = $("#login-retour"), code = $("#code").value;
+  retour.innerHTML = '<div class="msg">Vérification…</div>';
+  try{
+    const r = await api({ code, verifier:true });
+    if(r.ok){
+      codeOfficier = code;
+      try{ sessionStorage.setItem("legion_code", code); }catch{}
+      $("#code").value = ""; retour.innerHTML = "";
+      afficherAdmin(true);
+    }else{
+      retour.innerHTML = `<div class="msg err">${esc(r.statut === 401 ? "Code incorrect." : r.erreur || "Connexion impossible.")}</div>`;
+    }
+  }catch{
+    retour.innerHTML = '<div class="msg err">Serveur injoignable. L’Espace Officier ne fonctionne qu’une fois le site en ligne sur Netlify.</div>';
+  }
+});
+
+$("#a-ajout").onclick = () => dessinerChampsRaids([...lireRaids(), { nom:"", tues:0, total:10, mention:"", note:"" }]);
+$("#a-raids").addEventListener("click", e => {
+  const i = e.target.dataset?.sup;
+  if(i === undefined) return;
+  dessinerChampsRaids(lireRaids().filter((_, k) => k !== +i));
+});
+
+$("#a-sauver").onclick = async () => {
+  const retour = $("#a-retour"), data = lireAdmin();
+  data.raids = data.raids.filter(r => r.nom);
+  retour.innerHTML = '<div class="msg">Enregistrement…</div>';
+  try{
+    const r = await api({ code:codeOfficier, data });
+    if(r.ok){
+      appliquer(data); toutDessiner(); dessinerChampsRaids(etat.raids);
+      retour.innerHTML = '<div class="msg">Modifications publiées : elles sont visibles par tous les visiteurs.</div>';
+    }else if(r.statut === 401){
+      deconnecter();
+      $("#login-retour").innerHTML = '<div class="msg err">Session expirée ou code incorrect. Reconnectez-vous.</div>';
+    }else{
+      retour.innerHTML = `<div class="msg err">${esc(r.erreur || "L’enregistrement a échoué.")}</div>`;
+    }
+  }catch{
+    retour.innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
+  }
+};
 </script>
 </body>
 </html>
