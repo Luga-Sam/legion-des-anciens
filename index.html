@@ -159,6 +159,39 @@ footer{padding-bottom:5.5rem}
 .l-officier{background:none;border:0;color:var(--doux);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
 .l-officier:hover{color:var(--or-clair)}
 
+/* Calendrier de raid */
+.cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,430px),1fr));gap:1.2rem;align-items:start}
+.evt{background:linear-gradient(160deg,var(--pierre2),var(--pierre));border:1px solid var(--ligne);border-top:3px solid var(--hurle);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:.9rem}
+.evt.complet{border-top-color:var(--forge)}
+.evt.annule{border-top-color:var(--rouge);opacity:.65}
+.evt-tete{display:flex;justify-content:space-between;gap:.8rem;align-items:flex-start;flex-wrap:wrap}
+.evt h3{font-size:1.35rem}
+.quand{color:var(--or-clair);font-weight:700;margin-top:.2rem}
+.quand small{color:var(--doux);font-weight:400;font-size:1rem}
+.evt p{color:var(--doux);margin:0;font-size:1rem}
+.etiq{font-weight:700;font-size:.85rem;padding:.2rem .7rem;border-radius:3px;border:1px solid;white-space:nowrap}
+.et-ouvert{color:#6fcf9b;border-color:var(--fel);background:rgba(47,122,87,.18)}
+.et-complet{color:#1a1002;background:var(--forge);border-color:#f0cf86}
+.et-annule{color:#c98a7c;border-color:#6b3a30;background:rgba(181,82,63,.12)}
+.compo{display:flex;flex-wrap:wrap;gap:.5rem}
+.puce{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .75rem;border:1px solid var(--rc);color:var(--rc);border-radius:999px;font-size:.92rem}
+.role-tank{--rc:#5a9bd0}.role-soigneur{--rc:#3fae7a}.role-dps{--rc:#d2605a}.role-aux{--rc:var(--doux)}
+.ic{width:1.05rem;height:1.05rem;fill:currentColor;flex:none}
+.roles{display:grid;gap:.7rem}
+.role{border-left:3px solid var(--rc);background:rgba(0,0,0,.2);padding:.6rem .9rem}
+.role-tete{display:flex;align-items:center;gap:.5rem;font-weight:700;color:var(--rc);flex-wrap:wrap}
+.role-tete span{margin-left:auto;font-weight:400;color:var(--doux);font-size:.92rem}
+.inscrits{list-style:none;padding:0;margin:.45rem 0 0;display:grid;gap:.3rem}
+.inscrits li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .5rem;font-size:1rem}
+.inscrits b{color:var(--cl)}
+.inscrits small{color:var(--doux);font-size:.88rem}
+.note-i{width:100%;font-style:italic}
+.pastille{font-style:normal;font-size:.76rem;font-weight:700;padding:.05rem .5rem;border-radius:3px;border:1px solid var(--forge);color:var(--forge)}
+.pastille.ok{border-color:#3fae7a;color:#6fcf9b}
+.x{margin-left:auto;background:none;border:0;color:var(--doux);cursor:pointer;font-size:1rem;padding:0 .3rem}
+.x:hover{color:var(--rouge)}
+.evt .btn{align-self:flex-start}
+
 /* Espace Officier */
 dialog.large{width:min(920px,100% - 1.5rem)}
 .admin-barre{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin:1rem 0;padding-bottom:1rem;border-bottom:1px solid var(--ligne)}
@@ -171,6 +204,23 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 .a-raid{display:grid;grid-template-columns:2fr .7fr .7fr 1fr;gap:.2rem .7rem;border:1px solid var(--ligne);padding:.8rem 1rem 1rem;margin-bottom:.8rem}
 .a-raid .pleine{grid-column:1/-1}
 @media(max-width:640px){.a-raid{grid-template-columns:1fr 1fr}.a-raid .nom{grid-column:1/-1}}
+.onglets{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem}
+.onglets button{font:500 1rem var(--corps);color:var(--texte);background:transparent;border:1px solid var(--ligne);padding:.5rem 1.1rem;border-radius:999px;cursor:pointer}
+.onglets button[aria-pressed="true"]{background:var(--hurle);color:#fff;border-color:var(--hurle)}
+.a-grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.2rem .8rem}
+.a-grille .pleine{grid-column:1/-1}
+.a-evt{border:1px solid var(--ligne);border-left:3px solid var(--or);padding:.9rem 1rem;margin-bottom:1rem}
+.a-evt.archive{opacity:.6}
+.a-evt-tete{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem}
+.a-evt-tete select{width:auto;margin:0}
+.a-evt-tete span{color:var(--doux)}
+.a-ins{margin-top:.8rem;display:grid;gap:.4rem}
+.a-ligne{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .9rem;padding:.4rem .6rem;background:rgba(0,0,0,.2);border-left:3px solid var(--cl)}
+.a-ligne b{color:var(--cl)}
+.a-ligne select{width:auto;margin:0}
+.a-ligne .ic{width:1rem;height:1rem;vertical-align:-.15rem}
+.a-nom{flex:1 1 220px}
+.a-pres{flex:1 1 160px;color:var(--doux);font-size:.95rem}
 .admin-pied{position:sticky;bottom:-2rem;background:var(--pierre);padding:1rem 0;border-top:1px solid var(--ligne);margin-top:1.5rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
 .admin-pied .msg{margin:0;flex:1}
 
@@ -211,6 +261,7 @@ dialog.large{width:min(920px,100% - 1.5rem)}
     <nav aria-label="Navigation principale">
       <a href="#presentation">Qui sommes-nous ?</a>
       <a href="#recrutement">Recrutement</a>
+      <a href="#calendrier">Calendrier</a>
       <a href="#progression">Progression</a>
       <a href="#" class="js-postuler">Postuler</a>
     </nav>
@@ -326,6 +377,14 @@ dialog.large{width:min(920px,100% - 1.5rem)}
     </div>
   </section>
 
+  <section id="calendrier">
+    <div class="wrap">
+      <h2>Calendrier de raid</h2>
+      <p class="intro">Les prochaines soirées de la guilde, heures de France. Inscrivez votre personnage : les officiers valident ensuite la composition. La liste se met à jour toute seule.</p>
+      <div class="cal" id="cal" aria-live="polite"></div>
+    </div>
+  </section>
+
   <section id="progression">
     <div class="wrap">
       <h2>Progression</h2>
@@ -358,6 +417,12 @@ dialog.large{width:min(920px,100% - 1.5rem)}
     <div class="admin-barre"><span>Connecté en tant qu’officier</span>
       <button class="btn btn-ligne petit" type="button" id="deconnexion">Se déconnecter</button></div>
 
+    <div class="onglets" role="group" aria-label="Sections de l’Espace Officier">
+      <button type="button" data-p="site" aria-pressed="true">Annonce, recrutement, progression</button>
+      <button type="button" data-p="raids" aria-pressed="false">Calendrier &amp; roster</button>
+    </div>
+
+    <div id="panneau-site">
     <h3>Annonce de guilde</h3>
     <label for="a-annonce">Message affiché en bannière sur la page d’accueil (laisser vide pour ne rien afficher)
       <textarea id="a-annonce" maxlength="300" style="min-height:80px" placeholder="Prochain raid jeudi à 20h30…"></textarea></label>
@@ -373,7 +438,66 @@ dialog.large{width:min(920px,100% - 1.5rem)}
       <button class="btn btn-or" type="button" id="a-sauver">Sauvegarder</button>
       <div id="a-retour" role="status"></div>
     </div>
+    </div>
+
+    <div id="panneau-raids" hidden>
+      <h3>Créer un raid</h3>
+      <form id="f-raid">
+        <div class="a-grille">
+          <label class="pleine">Titre (ex : Naxxramas)<input id="c-titre" required maxlength="60"></label>
+          <label>Date<input id="c-date" type="date" required></label>
+          <label>Rassemblement<input id="c-rass" type="time" value="20:30" required></label>
+          <label>Début<input id="c-debut" type="time" value="20:45" required></label>
+          <label>Tanks<input id="c-tank" type="number" min="0" max="40" value="2"></label>
+          <label>Soigneurs<input id="c-heal" type="number" min="0" max="40" value="4"></label>
+          <label>DPS<input id="c-dps" type="number" min="0" max="40" value="4"></label>
+          <label class="pleine">Description (facultatif)<textarea id="c-desc" maxlength="300" style="min-height:70px" placeholder="Objectifs, consommables, remarques…"></textarea></label>
+        </div>
+        <button class="btn btn-or" type="submit" style="width:auto;padding-inline:2rem">Créer le raid</button>
+      </form>
+
+      <h3>Raids et roster</h3>
+      <p class="intro" style="margin-bottom:1rem">Les changements faits ici (statut, roster, archivage) s’appliquent tout de suite, sans bouton « Sauvegarder ».</p>
+      <div id="a-cal"></div>
+      <div id="c-retour" role="status"></div>
+    </div>
   </div>
+</dialog>
+
+<!-- Inscription à un raid -->
+<dialog id="inscription" aria-labelledby="ins-titre">
+  <button class="fermer" type="button" aria-label="Fermer" id="ins-fermer">&times;</button>
+  <h2 id="ins-titre">S’inscrire</h2>
+  <p class="intro" style="margin-bottom:0">Les officiers valident ensuite la composition du roster.</p>
+  <form id="f-ins">
+    <p class="hp"><label>Ne pas remplir <input id="i-piege" tabindex="-1" autocomplete="off"></label></p>
+    <label for="i-pseudo">Pseudo du personnage
+      <input id="i-pseudo" required maxlength="24" autocomplete="off"></label>
+    <label for="i-classe">Classe
+      <select id="i-classe" required><option value="">Choisir une classe</option></select></label>
+    <label for="i-spe">Spécialisation
+      <select id="i-spe" required disabled><option value="">Choisissez d’abord une classe</option></select></label>
+    <label for="i-role">Rôle
+      <select id="i-role" required>
+        <option value="dps">DPS (épée)</option>
+        <option value="tank">Tank (bouclier)</option>
+        <option value="soigneur">Soigneur (croix)</option>
+      </select></label>
+    <label for="i-presence">Présence
+      <select id="i-presence" required>
+        <option value="present">Présent</option>
+        <option value="retard">En retard</option>
+        <option value="absent">Absent</option>
+      </select></label>
+    <div id="i-heure-bloc" hidden>
+      <label for="i-heure">Heure d’arrivée prévue
+        <input id="i-heure" type="time"></label>
+    </div>
+    <label for="i-note">Note (facultatif)
+      <input id="i-note" maxlength="120" placeholder="Ex : disponible jusqu’à 23h30" autocomplete="off"></label>
+    <button class="btn btn-or" type="submit">Valider mon inscription</button>
+    <div id="ins-retour" role="status"></div>
+  </form>
 </dialog>
 
 <!-- Lecteur de l'hymne -->
@@ -558,6 +682,152 @@ fetch("/api/data", { cache:"no-store" })
   .then(r => r.ok ? r.json() : null)
   .then(d => { if(d && Object.keys(d).length){ appliquer(d); toutDessiner(); } })
   .catch(() => {});
+
+/* Calendrier de raid et inscriptions */
+const ROLE_LIBELLE = { tank:"Tank", soigneur:"Soigneur", dps:"DPS" };
+const ROLE_PLURIEL = { tank:"Tanks", soigneur:"Soigneurs", dps:"DPS" };
+const ROLE_ICONE = {
+  tank:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/></svg>',
+  soigneur:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>',
+  dps:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M20 4 10 14M7 11l6 6M8.5 15.5 4 20"/></svg>'
+};
+const ROLE_DEFAUT = {
+  Guerrier:{ Armes:"dps", Fureur:"dps", Protection:"tank" },
+  Paladin:{ "Sacré":"soigneur", Protection:"tank", Vindicte:"dps" },
+  "Prêtre":{ Discipline:"soigneur", "Sacré":"soigneur", Ombre:"dps" },
+  Chamane:{ "Élémentaire":"dps", "Amélioration":"dps", Restauration:"soigneur" },
+  Druide:{ "Équilibre":"dps", "Combat farouche":"dps", Restauration:"soigneur" }
+};
+const roleDe = (c, sp) => ROLE_DEFAUT[c]?.[sp] || "dps";
+const PRES = { present:"Présent", retard:"En retard", absent:"Absent" };
+const ETIQ = { ouvert:"Ouvert aux inscriptions", complet:"Complet", annule:"Annulé" };
+const jourFmt = new Intl.DateTimeFormat("fr-FR", { weekday:"long", day:"numeric", month:"long" });
+const couleurDe = n => CLASSES.find(c => c.nom === n)?.couleur || "#d9d6c9";
+const debutDe = r => new Date(`${r.date}T${r.debut}`);
+const maj = t => t.charAt(0).toUpperCase() + t.slice(1);
+let evts = [], evtCourant = "", jetonMemoire = "";
+
+// Le « jeton » prouve qu'une inscription vient de ce navigateur : lui seul peut la modifier ou la retirer
+function jeton(){
+  try{
+    let j = localStorage.getItem("legion_jeton");
+    if(!j){ j = crypto.randomUUID(); localStorage.setItem("legion_jeton", j); }
+    return j;
+  }catch{ return jetonMemoire || (jetonMemoire = crypto.randomUUID()); }
+}
+function mes(){ try{ return JSON.parse(localStorage.getItem("legion_mes") || "{}"); }catch{ return {}; } }
+function retenir(raidId, pseudo){
+  try{
+    const m = mes(); m[raidId] = m[raidId] || [];
+    if(!m[raidId].includes(pseudo.toLowerCase())) m[raidId].push(pseudo.toLowerCase());
+    localStorage.setItem("legion_mes", JSON.stringify(m));
+    localStorage.setItem("legion_pseudo", pseudo);
+  }catch{}
+}
+function oublier(raidId, pseudo){
+  try{ const m = mes(); m[raidId] = (m[raidId] || []).filter(x => x !== pseudo.toLowerCase()); localStorage.setItem("legion_mes", JSON.stringify(m)); }catch{}
+}
+async function apiCal(corps){
+  const r = await fetch("/api/raids", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(corps) });
+  let d = {}; try{ d = await r.json(); }catch{}
+  return { ok:r.ok, statut:r.status, ...d };
+}
+
+function carteRaid(r){
+  const ins = r.inscriptions || [], moi = mes()[r.id] || [];
+  const actif = i => i.presence !== "absent" && i.etat !== "remplacant";
+  const ligne = i => `<li style="--cl:${couleurDe(i.classe)}"><b>${esc(i.pseudo)}</b><small>${esc(i.spe)} ${esc(i.classe)}</small>`
+    + (i.presence === "retard" ? `<em class="pastille">En retard${i.heure ? " " + esc(i.heure) : ""}</em>` : "")
+    + (i.etat === "confirme" ? '<em class="pastille ok">Confirmé</em>' : "")
+    + (i.note ? `<small class="note-i">« ${esc(i.note)} »</small>` : "")
+    + (moi.includes(i.pseudo.toLowerCase()) ? `<button type="button" class="x" data-retirer="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Retirer mon inscription">✕</button>` : "")
+    + "</li>";
+  let total = 0, pleins = true;
+  const blocs = ["tank", "soigneur", "dps"].map(k => {
+    const need = r.compo[k];
+    const liste = ins.filter(i => i.role === k && actif(i)).sort((a, b) => (b.etat === "confirme") - (a.etat === "confirme"));
+    total += need; if(liste.length < need) pleins = false;
+    const reste = Math.max(0, need - liste.length);
+    const etat = reste ? `${reste} place${reste > 1 ? "s" : ""} restante${reste > 1 ? "s" : ""}` : "Complet";
+    return `<div class="role role-${k}"><div class="role-tete">${ROLE_ICONE[k]} ${ROLE_PLURIEL[k]}<span>${liste.length}/${need} · ${etat}</span></div>
+      <ul class="inscrits">${liste.map(ligne).join("") || "<li><small>Personne pour le moment</small></li>"}</ul></div>`;
+  }).join("");
+  const aux = (titre, l) => l.length ? `<div class="role role-aux"><div class="role-tete">${titre}<span>${l.length}</span></div><ul class="inscrits">${l.map(ligne).join("")}</ul></div>` : "";
+  let st = r.statut;
+  if(st === "ouvert" && total && pleins) st = "complet";
+  const compo = ["tank", "soigneur", "dps"].map(k => `<span class="puce role-${k}">${ROLE_ICONE[k]} ${r.compo[k]} ${r.compo[k] > 1 ? ROLE_PLURIEL[k] : ROLE_LIBELLE[k]}</span>`).join("");
+  return `<article class="evt ${st}"><div class="evt-tete"><div><h3>${esc(r.titre)}</h3>
+    <div class="quand">${esc(maj(jourFmt.format(debutDe(r))))} <small>· Rassemblement ${esc(r.rassemblement)} · Début ${esc(r.debut)}</small></div></div>
+    <span class="etiq et-${st}">${ETIQ[st]}</span></div>
+    ${r.description ? `<p>${esc(r.description)}</p>` : ""}
+    <div class="compo" aria-label="Composition souhaitée">${compo}</div>
+    <div class="roles">${blocs}${aux("Remplaçants", ins.filter(i => i.etat === "remplacant" && i.presence !== "absent"))}${aux("Absents", ins.filter(i => i.presence === "absent"))}</div>
+    ${st === "annule" ? "" : `<button class="btn btn-or petit" type="button" data-ins="${esc(r.id)}">${st === "complet" ? "S’inscrire (liste d’attente)" : "S’inscrire"}</button>`}</article>`;
+}
+function dessinerCal(){
+  const l = evts.filter(r => debutDe(r).getTime() > Date.now() - 6 * 3600e3).sort((a, b) => debutDe(a) - debutDe(b));
+  $("#cal").innerHTML = l.map(carteRaid).join("") || '<p class="intro">Aucun raid planifié pour le moment. Les prochaines dates seront annoncées ici et sur notre Discord.</p>';
+}
+async function chargerCal(){
+  try{
+    const r = await fetch("/api/raids", { cache:"no-store" });
+    if(!r.ok) return;
+    evts = (await r.json()).raids || [];
+    dessinerCal();
+  }catch{}
+}
+dessinerCal();
+chargerCal();
+setInterval(() => { if(document.visibilityState === "visible") chargerCal(); }, 60000);   // mise à jour toutes les minutes
+
+const dIns = $("#inscription"), iClasse = $("#i-classe"), iSpe = $("#i-spe");
+CLASSES.forEach(c => iClasse.add(new Option(c.nom, c.nom)));
+iClasse.onchange = () => {
+  const c = CLASSES.find(x => x.nom === iClasse.value);
+  iSpe.length = 1; iSpe.disabled = !c;
+  iSpe.options[0].text = c ? "Choisir une spécialisation" : "Choisissez d’abord une classe";
+  if(c) c.specs.forEach(sp => iSpe.add(new Option(sp, sp)));
+};
+iSpe.onchange = () => { if(iSpe.value) $("#i-role").value = roleDe(iClasse.value, iSpe.value); };
+$("#i-presence").onchange = e => { $("#i-heure-bloc").hidden = e.target.value !== "retard"; };
+$("#ins-fermer").onclick = () => dIns.close();
+dIns.addEventListener("click", e => { if(e.target === dIns) dIns.close(); });
+
+$("#cal").addEventListener("click", async e => {
+  const b = e.target.closest("button");
+  if(!b) return;
+  if(b.dataset.ins){
+    evtCourant = b.dataset.ins;
+    const r = evts.find(x => x.id === evtCourant);
+    $("#ins-titre").textContent = "S’inscrire : " + (r ? r.titre : "raid");
+    $("#ins-retour").innerHTML = "";
+    try{ $("#i-pseudo").value = localStorage.getItem("legion_pseudo") || ""; }catch{}
+    dIns.showModal();
+  }else if(b.dataset.retirer){
+    if(!confirm("Retirer l’inscription de " + b.dataset.pseudo + " ?")) return;
+    try{
+      const res = await apiCal({ action:"retirer", raidId:b.dataset.retirer, pseudo:b.dataset.pseudo, jeton:jeton() });
+      if(res.ok){ oublier(b.dataset.retirer, b.dataset.pseudo); chargerCal(); }
+      else alert(res.erreur || "Impossible de retirer l’inscription.");
+    }catch{ alert("Serveur injoignable. Réessayez dans un instant."); }
+  }
+});
+
+$("#f-ins").addEventListener("submit", async e => {
+  e.preventDefault();
+  const bouton = e.target.querySelector("button[type=submit]"), retour = $("#ins-retour");
+  const v = id => $("#" + id).value.trim();
+  bouton.disabled = true; bouton.textContent = "Envoi…";
+  try{
+    const res = await apiCal({ action:"inscrire", raidId:evtCourant, jeton:jeton(), "bot-field":v("i-piege"),
+      inscription:{ pseudo:v("i-pseudo"), classe:v("i-classe"), spe:v("i-spe"), role:v("i-role"), presence:v("i-presence"), heure:v("i-heure"), note:v("i-note") } });
+    if(res.ok){ retenir(evtCourant, v("i-pseudo")); dIns.close(); await chargerCal(); }
+    else retour.innerHTML = `<div class="msg err">${esc(res.erreur || "L’inscription a échoué. Réessayez dans un instant.")}</div>`;
+  }catch{
+    retour.innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
+  }
+  bouton.disabled = false; bouton.textContent = "Valider mon inscription";
+});
 
 /* Formulaire */
 const selClasse = $("#classe"), selSpe = $("#spe");
@@ -781,6 +1051,71 @@ $("#a-sauver").onclick = async () => {
     retour.innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
   }
 };
+
+/* Espace Officier : calendrier et roster */
+const onglets = document.querySelectorAll(".onglets button");
+onglets.forEach(b => b.onclick = () => {
+  onglets.forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("#panneau-site").hidden = b.dataset.p !== "site";
+  $("#panneau-raids").hidden = b.dataset.p !== "raids";
+  if(b.dataset.p === "raids") chargerAdminCal();
+});
+let adminEvts = [];
+async function actionCal(corps){
+  try{
+    const res = await apiCal({ code:codeOfficier, ...corps });
+    if(res.statut === 401){
+      deconnecter();
+      $("#login-retour").innerHTML = '<div class="msg err">Session expirée ou code incorrect. Reconnectez-vous.</div>';
+      return null;
+    }
+    if(!res.ok){ $("#c-retour").innerHTML = `<div class="msg err">${esc(res.erreur || "Action impossible.")}</div>`; return null; }
+    adminEvts = res.raids || []; dessinerAdminCal(); chargerCal();
+    return res;
+  }catch{
+    $("#c-retour").innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
+    return null;
+  }
+}
+function chargerAdminCal(){ $("#c-retour").innerHTML = ""; actionCal({ action:"tout" }); }
+const opts = (liste, v) => liste.map(([k, t]) => `<option value="${k}"${v === k ? " selected" : ""}>${t}</option>`).join("");
+function dessinerAdminCal(){
+  const tri = [...adminEvts].sort((a, b) => debutDe(a) - debutDe(b));
+  $("#a-cal").innerHTML = tri.map(r => `
+    <div class="a-evt${r.archive ? " archive" : ""}">
+      <div class="a-evt-tete"><strong>${esc(r.titre)}</strong><span>${esc(r.date)} · ${esc(r.rassemblement)} / ${esc(r.debut)}${r.archive ? " · archivé" : ""}</span>
+        <select data-statut="${esc(r.id)}" aria-label="Statut du raid">${opts([["ouvert","Ouvert aux inscriptions"],["complet","Complet"],["annule","Annulé"]], r.statut)}</select>
+        <button class="btn btn-ligne petit" type="button" data-archiver="${esc(r.id)}" data-val="${r.archive ? "0" : "1"}">${r.archive ? "Restaurer" : "Archiver"}</button>
+        <button class="btn btn-ligne petit" type="button" data-suppr="${esc(r.id)}">Supprimer</button></div>
+      <div class="a-ins">${r.inscriptions.map(i => `
+        <div class="a-ligne" style="--cl:${couleurDe(i.classe)}">
+          <span class="a-nom"><b>${esc(i.pseudo)}</b> <small>${ROLE_ICONE[i.role] || ""} ${esc(i.spe)} ${esc(i.classe)}</small></span>
+          <span class="a-pres">${PRES[i.presence] || ""}${i.heure ? " " + esc(i.heure) : ""}${i.note ? " · " + esc(i.note) : ""}</span>
+          <select data-etat="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Validation du roster pour ${esc(i.pseudo)}">${opts([["attente","En attente"],["confirme","Confirmé"],["remplacant","Remplaçant"]], i.etat)}</select>
+          <button class="x" type="button" data-retirer-adm="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Retirer ${esc(i.pseudo)}">✕</button>
+        </div>`).join("") || "<small>Aucune inscription pour le moment.</small>"}</div>
+    </div>`).join("") || '<p class="intro">Aucun raid pour le moment.</p>';
+}
+$("#a-cal").addEventListener("change", e => {
+  const t = e.target;
+  if(t.dataset.statut) actionCal({ action:"statut", raidId:t.dataset.statut, statut:t.value });
+  else if(t.dataset.etat) actionCal({ action:"roster", raidId:t.dataset.etat, pseudo:t.dataset.pseudo, etat:t.value });
+});
+$("#a-cal").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if(!b) return;
+  const d = b.dataset;
+  if(d.archiver) actionCal({ action:"archiver", raidId:d.archiver, archive:d.val === "1" });
+  else if(d.suppr){ if(confirm("Supprimer définitivement ce raid et toutes ses inscriptions ?")) actionCal({ action:"supprimer", raidId:d.suppr }); }
+  else if(d.retirerAdm){ if(confirm("Retirer " + d.pseudo + " de ce raid ?")) actionCal({ action:"retirer", raidId:d.retirerAdm, pseudo:d.pseudo }); }
+});
+$("#f-raid").addEventListener("submit", async e => {
+  e.preventDefault();
+  const v = id => $("#" + id).value.trim();
+  const res = await actionCal({ action:"creer", raid:{ titre:v("c-titre"), date:v("c-date"), rassemblement:v("c-rass"), debut:v("c-debut"),
+    description:v("c-desc"), tank:v("c-tank"), soigneur:v("c-heal"), dps:v("c-dps") } });
+  if(res){ e.target.reset(); $("#c-retour").innerHTML = '<div class="msg">Raid créé : il est visible sur la page d’accueil.</div>'; }
+});
 </script>
 </body>
 </html>

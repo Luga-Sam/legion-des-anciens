@@ -58,14 +58,18 @@ export async function onRequestPost({ request, env }) {
   try {
     const r = await fetch(DISCORD_WEBHOOK_URL, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", "user-agent": "LegionDesAnciens-Site (candidatures, 1.0)" },
       body: JSON.stringify({
         username: "Recrutement – La Légion des Anciens",
         embeds: [embed],
         allowed_mentions: { parse: [] }   // empêche @everyone / @here dans les textes saisis
       })
     });
-    if (!r.ok) return reponse({ erreur: "Discord a refusé le message." }, 502);
+    if (!r.ok) {
+      // On renvoie la raison donnée par Discord (ex. « Unknown Webhook ») pour faciliter le diagnostic
+      let raison = ""; try { raison = (await r.text()).slice(0, 160); } catch {}
+      return reponse({ erreur: `Discord a refusé le message (HTTP ${r.status}) ${raison}`.trim() }, 502);
+    }
   } catch {
     return reponse({ erreur: "Discord injoignable." }, 502);
   }
