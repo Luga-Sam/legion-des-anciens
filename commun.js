@@ -368,34 +368,45 @@ $("#btn-deconnexion").onclick = () => { if(sb) sb.auth.signOut(); };
 
 $("#f-auth").addEventListener("submit", async e => {
   e.preventDefault();
-  if(!sb) return;
-  const retour = $("#auth-retour"), bouton = $("#au-envoi"), email = $("#au-email").value.trim(), mdp = $("#au-mdp").value;
+  const retour = $("#auth-retour"), bouton = $("#au-envoi");
+  const email = $("#au-email").value.trim();
+  const password = $("#au-mdp").value;
+  const pseudo = $("#au-pseudo").value.trim();
+
   bouton.disabled = true; retour.innerHTML = "";
-  try{
-    if(modeAuth === "connexion"){
-      const { error } = await sb.auth.signInWithPassword({ email, password:mdp });
-      if(error) throw error;
-      $("#au-mdp").value = ""; dAuth.close();
-    }else if(modeAuth === "inscription"){
-      const { data, error } = await sb.auth.signUp({ email, password:mdp, options:{ data:{ pseudo:$("#au-pseudo").value.trim() } } });
-      if(error) throw error;
-      if(data.user && data.user.identities && data.user.identities.length === 0) throw new Error("already registered");
-      if(data.session){ $("#au-mdp").value = ""; dAuth.close(); }
-      else retour.innerHTML = '<div class="msg">Compte créé ! Confirmez votre adresse e-mail grâce au message que vous allez recevoir, puis connectez-vous.</div>';
-    }else{
-      const { error } = await sb.auth.updateUser({ password:mdp });
-      if(error) throw error;
-      $("#au-mdp").value = ""; dAuth.close(); alert("Votre mot de passe a été modifié.");
+  try {
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: modeAuth, email, password, pseudo })
+    });
+
+    // Récupération sécurisée pour éviter les plantages si le serveur renvoie du HTML par erreur
+    const texteReponse = await res.text();
+    let data;
+    try {
+      data = JSON.parse(texteReponse);
+    } catch {
+      throw new Error("Erreur du serveur (le serveur a renvoyé du HTML au lieu de JSON).");
     }
-  }catch(err){ retour.innerHTML = `<div class="msg err">${esc(messageErreur(err))}</div>`; }
+
+    if(!res.ok) throw new Error(data.erreur || "Erreur de connexion");
+
+    if(modeAuth === "inscription") {
+      retour.innerHTML = `<div class="msg">${esc(data.message)}</div>`;
+    } else {
+      session = data.session;
+      profil = data.profil;
+      localStorage.setItem("legion_session", JSON.stringify({ session, profil }));
+      dAuth.close();
+      majInterface();
+      location.reload();
+    }
+  } catch(err) {
+    retour.innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+  }
   bouton.disabled = false;
 });
-$("#au-oubli").onclick = async () => {
-  const retour = $("#auth-retour"), email = $("#au-email").value.trim();
-  if(!email){ retour.innerHTML = '<div class="msg err">Saisissez d’abord votre adresse e-mail ci-dessus.</div>'; return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo:location.origin + location.pathname });
-  retour.innerHTML = error ? `<div class="msg err">${esc(messageErreur(error))}</div>` : '<div class="msg">Si cette adresse correspond à un compte, un lien pour choisir un nouveau mot de passe vient d’être envoyé.</div>';
-};
 
 
 function adapter(r){
