@@ -1,14 +1,14 @@
 /* =====================================================================
-   commun.js : ce qui est partagé par TOUTES les pages (menu, pied de page, hymne, comptes,
-   Espace Officier).
+   commun.js : ce qui est partagé par TOUTES les pages (menu, pied de page,
+   hymne, comptes membres D1, Espace Officier).
    ===================================================================== */
 const $ = s => document.querySelector(s);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const PAGE = document.body.dataset.page || "accueil";
 const LIBELLES = { ouvert:"Ouvert", ferme:"Fermé", prio:"Recherche prioritaire" };
 const SB_OK = true; // Activé pour Cloudflare D1
-const TWITCH_OK = /^[A-Za-z0-9_]{3,25}$/.test(TWITCH_CHANNEL_NAME) && TWITCH_CHANNEL_NAME !== "ton_pseudo_twitch";
-const TWITCH_URL = "https://www.twitch.tv/" + TWITCH_CHANNEL_NAME;
+const TWITCH_OK = typeof TWITCH_CHANNEL_NAME !== "undefined" && /^[A-Za-z0-9_]{3,25}$/.test(TWITCH_CHANNEL_NAME) && TWITCH_CHANNEL_NAME !== "ton_pseudo_twitch";
+const TWITCH_URL = "https://www.twitch.tv/" + (typeof TWITCH_CHANNEL_NAME !== "undefined" ? TWITCH_CHANNEL_NAME : "");
 
 function signaler(nom){ document.dispatchEvent(new CustomEvent("legion:" + nom)); }
 
@@ -43,7 +43,6 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
     <button type="button" data-m="connexion" aria-pressed="true">Connexion</button>
     <button type="button" data-m="inscription" aria-pressed="false">Créer un compte</button>
   </div>
-  <p class="intro" id="auth-indispo" hidden style="margin-top:1rem">Les comptes membres ne sont pas activés.</p>
   <form id="f-auth">
     <div id="auth-pseudo-bloc" hidden>
       <label for="au-pseudo">Pseudo affiché sur le site
@@ -56,7 +55,6 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
     <label for="au-mdp"><span id="au-mdp-lib">Mot de passe</span>
       <input id="au-mdp" type="password" required minlength="8" autocomplete="current-password"></label>
     <button class="btn btn-or" type="submit" id="au-envoi">Se connecter</button>
-    <button type="button" class="lien-bouton" id="au-oubli">Mot de passe oublié ?</button>
     <p class="intro petite" id="au-aide" style="margin:.8rem 0 0"></p>
     <div id="auth-retour" role="status"></div>
   </form>
@@ -116,18 +114,18 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
     <div id="tableau" hidden>
       <div class="admin-barre"><span>Code officier validé</span>
         <button class="btn btn-ligne petit" type="button" id="deconnexion">Verrouiller</button></div>
-    <h3>Annonce de guilde</h3>
-    <label for="a-annonce">Message affiché en bannière sur la page d’accueil
-      <textarea id="a-annonce" maxlength="300" style="min-height:80px"></textarea></label>
-    <h3>Recrutement</h3>
-    <div id="a-rec"></div>
-    <h3>Progression des raids</h3>
-    <div id="a-raids"></div>
-    <button class="btn btn-ligne petit" type="button" id="a-ajout">+ Ajouter un raid</button>
-    <div class="admin-pied">
-      <button class="btn btn-or" type="button" id="a-sauver">Sauvegarder</button>
-      <div id="a-retour" role="status"></div>
-    </div>
+      <h3>Annonce de guilde</h3>
+      <label for="a-annonce">Message affiché en bannière sur la page d’accueil
+        <textarea id="a-annonce" maxlength="300" style="min-height:80px"></textarea></label>
+      <h3>Recrutement</h3>
+      <div id="a-rec"></div>
+      <h3>Progression des raids</h3>
+      <div id="a-raids"></div>
+      <button class="btn btn-ligne petit" type="button" id="a-ajout">+ Ajouter un raid</button>
+      <div class="admin-pied">
+        <button class="btn btn-or" type="button" id="a-sauver">Sauvegarder</button>
+        <div id="a-retour" role="status"></div>
+      </div>
     </div>
   </div>
 
@@ -148,7 +146,7 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
           <label>Soigneurs<input id="c-heal" type="number" min="0" max="40" value="4"></label>
           <label>DPS<input id="c-dps" type="number" min="0" max="40" value="4"></label>
         </div>
-        <button class="btn btn-or" type="submit">Créer le raid</button>
+        <button class="btn btn-or" type="submit" style="margin-top:1rem">Créer le raid</button>
       </form>
       <div id="a-cal"></div>
       <div id="c-retour" role="status"></div>
@@ -199,7 +197,8 @@ function injecterMiseEnPage(){
 injecterMiseEnPage();
 
 const entete = $("#entete"), burger = $("#burger");
-burger.onclick = () => { const ouvert = entete.classList.toggle("ouvert"); burger.setAttribute("aria-expanded", String(ouvert)); };
+if(burger) burger.onclick = () => { const ouvert = entete.classList.toggle("ouvert"); burger.setAttribute("aria-expanded", String(ouvert)); };
+if(typeof LIEN_DISCORD !== "undefined") document.querySelectorAll(".js-discord").forEach(a => a.href = LIEN_DISCORD);
 
 /* État du site & Données */
 const etat = { annonce:"", recrutement:{}, raids:[] };
@@ -245,7 +244,7 @@ function majInterface(){
 document.addEventListener("DOMContentLoaded", majInterface);
 setTimeout(majInterface, 50);
 
-// Gestion de la modale d'authentification
+// Modale d'authentification
 const dAuth = $("#dlg-auth");
 let modeAuth = "connexion";
 function modeAuthSet(m){
@@ -260,7 +259,7 @@ function modeAuthSet(m){
   if($("#au-aide")) $("#au-aide").textContent = ins ? "Un officier validera votre compte pour vous donner accès au calendrier." : "";
 }
 function ouvrirAuth(m = "connexion"){
-  if(SB_OK) modeAuthSet(m);
+  modeAuthSet(m);
   if(dAuth && !dAuth.open) dAuth.showModal();
 }
 if($("#auth-onglets")) $("#auth-onglets").addEventListener("click", e => { if(e.target.dataset.m) modeAuthSet(e.target.dataset.m); });
@@ -273,7 +272,7 @@ if($("#btn-deconnexion")) $("#btn-deconnexion").onclick = () => {
   majInterface(); location.reload();
 };
 
-/* Délégation globale pour la soumission du formulaire d'authentification */
+/* Soumission du formulaire d'authentification */
 document.addEventListener("submit", async e => {
   if (e.target && e.target.id === "f-auth") {
     e.preventDefault();
@@ -313,7 +312,41 @@ document.addEventListener("submit", async e => {
   }
 });
 
-/* Espace Officier */
+/* ---------- Armurerie : Personnages ---------- */
+const dPerso = $("#dlg-perso"), pClasse = $("#p-classe"), pSpe = $("#p-spe");
+if(pClasse && typeof CLASSES !== "undefined") CLASSES.forEach(c => pClasse.add(new Option(c.nom, c.nom)));
+if(typeof METIERS !== "undefined") {
+  [$("#p-m1"), $("#p-m2")].forEach(s => { if(s) METIERS.forEach(m => s.add(new Option(m, m))); });
+}
+
+if(pClasse) {
+  pClasse.onchange = () => {
+    if(typeof CLASSES === "undefined") return;
+    const c = CLASSES.find(x => x.nom === pClasse.value);
+    pSpe.length = 1; pSpe.disabled = !c;
+    pSpe.options[0].text = c ? "Choisir une spécialisation" : "Choisissez d’abord une classe";
+    if(c) c.specs.forEach(sp => pSpe.add(new Option(sp, sp)));
+  };
+}
+
+function ouvrirPerso(p){
+  if(!dPerso) return;
+  if($("#perso-retour")) $("#perso-retour").innerHTML = "";
+  if($("#perso-titre")) $("#perso-titre").textContent = p ? "Modifier mon personnage" : "Nouveau personnage";
+  if($("#p-id")) $("#p-id").value = p ? p.id : "";
+  if($("#p-nom")) $("#p-nom").value = p ? p.nom : "";
+  if(pClasse) { pClasse.value = p ? p.classe : ""; pClasse.onchange(); }
+  if(pSpe) pSpe.value = p ? p.specialisation : "";
+  if($("#p-role")) $("#p-role").value = p ? p.role : "dps";
+  if($("#p-niveau")) $("#p-niveau").value = p ? p.niveau : "";
+  if($("#p-m1")) $("#p-m1").value = p?.metier1 || "";
+  if($("#p-m2")) $("#p-m2").value = p?.metier2 || "";
+  if(!dPerso.open) dPerso.showModal();
+}
+if($("#perso-fermer")) $("#perso-fermer").onclick = () => dPerso.close();
+if(dPerso) dPerso.addEventListener("click", e => { if(e.target === dPerso) dPerso.close(); });
+
+/* ---------- Espace Officier ---------- */
 const adm = $("#admin"), login = $("#login"), tableau = $("#tableau");
 let codeOfficier = "";
 try{ codeOfficier = sessionStorage.getItem("legion_code") || ""; }catch{}
@@ -355,7 +388,35 @@ if(login) {
   });
 }
 
-// Gestion des onglets de l'Espace Officier
+// Création de raid par les officiers
+if($("#f-raid")) {
+  $("#f-raid").addEventListener("submit", async e => {
+    e.preventDefault();
+    const titre = $("#c-titre").value.trim();
+    const date = $("#c-date").value;
+    const debut = $("#c-debut").value;
+    const rassemblement = $("#c-rass").value;
+    const tank = +$("#c-tank").value;
+    const soigneur = +$("#c-heal").value;
+    const dps = +$("#c-dps").value;
+
+    try {
+      const res = await fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: codeOfficier, action: "creer_raid", raid: { titre, date, debut, rassemblement, tank, soigneur, dps } })
+      });
+      const d = await res.json();
+      if(!res.ok) throw new Error(d.erreur || "Erreur lors de la création du raid");
+      if($("#c-retour")) $("#c-retour").innerHTML = '<div class="msg">Raid créé avec succès !</div>';
+      e.target.reset();
+    } catch(err) {
+      if($("#c-retour")) $("#c-retour").innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+    }
+  });
+}
+
+// Onglets de l'Espace Officier
 let membres = [], ongletAdmin = "site";
 function afficherOnglet(p){
   ongletAdmin = p;
@@ -430,4 +491,27 @@ if($("#a-membres")) {
       if($("#m-retour")) $("#m-retour").innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
     }
   });
+}
+
+/* ---------- Twitch ---------- */
+async function sonderTwitch(){
+  if(typeof TWITCH_CHANNEL_NAME === "undefined") return;
+  try{
+    const r = await fetch("/api/twitch?channel=" + encodeURIComponent(TWITCH_CHANNEL_NAME));
+    const d = r.ok ? await r.json() : null;
+    if(d && typeof d.live === "boolean"){
+      const b = $("#tw-badge");
+      if(b) {
+        b.classList.toggle("live", d.live);
+        b.hidden = false;
+        b.href = TWITCH_URL;
+        b.setAttribute("aria-label", d.live ? "Chaîne Twitch : en direct maintenant" : "Chaîne Twitch");
+      }
+      if($("#tw-txt")) $("#tw-txt").textContent = d.live ? "EN LIVE" : "Twitch";
+    }
+  }catch{}
+}
+if(TWITCH_OK){
+  sonderTwitch();
+  setInterval(() => { if(document.visibilityState === "visible") sonderTwitch(); }, 60000);
 }
