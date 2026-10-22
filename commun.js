@@ -350,20 +350,55 @@ dAuth.addEventListener("click", e => { if(e.target === dAuth) dAuth.close(); });
 $("#btn-connexion").onclick = () => ouvrirAuth("connexion");
 $("#btn-deconnexion").onclick = () => { if(sb) sb.auth.signOut(); };
 
-$("#f-auth").addEventListener("submit", async e => {
-  e.preventDefault();
-  const retour = $("#auth-retour"), bouton = $("#au-envoi");
-  const email = $("#au-email").value.trim();
-  const password = $("#au-mdp").value;
-  const pseudo = $("#au-pseudo").value.trim();
+/* ---------- Gestion sécurisée du formulaire d'authentification ---------- */
+document.addEventListener("submit", async e => {
+  if (e.target && e.target.id === "f-auth") {
+    e.preventDefault();
+    
+    const retour = $("#auth-retour");
+    const bouton = $("#au-envoi");
+    const email = $("#au-email").value.trim();
+    const password = $("#au-mdp").value;
+    const pseudo = $("#au-pseudo") ? $("#au-pseudo").value.trim() : "";
 
-  bouton.disabled = true; retour.innerHTML = "";
-  try {
-    const res = await fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: modeAuth, email, password, pseudo })
-    });
+    if (bouton) bouton.disabled = true;
+    if (retour) retour.innerHTML = '<div class="msg">Connexion en cours…</div>';
+
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: modeAuth, email, password, pseudo })
+      });
+
+      const texteReponse = await res.text();
+      let data;
+      try {
+        data = JSON.parse(texteReponse);
+      } catch {
+        throw new Error("Erreur du serveur (réponse non-JSON).");
+      }
+
+      if (!res.ok) throw new Error(data.erreur || "Erreur de connexion");
+
+      if (modeAuth === "inscription") {
+        if (retour) retour.innerHTML = `<div class="msg">${esc(data.message)}</div>`;
+      } else {
+        session = data.session;
+        profil = data.profil;
+        localStorage.setItem("legion_session", JSON.stringify({ session, profil }));
+        
+        if (dAuth) dAuth.close();
+        majInterface();
+        location.reload();
+      }
+    } catch(err) {
+      if (retour) retour.innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+    } finally {
+      if (bouton) bouton.disabled = false;
+    }
+  }
+});
 
     // Récupération sécurisée pour éviter les plantages si le serveur renvoie du HTML par erreur
     const texteReponse = await res.text();
