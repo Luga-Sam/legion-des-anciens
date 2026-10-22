@@ -6,7 +6,7 @@ const $ = s => document.querySelector(s);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const PAGE = document.body.dataset.page || "accueil";
 const LIBELLES = { ouvert:"Ouvert", ferme:"Fermé", prio:"Recherche prioritaire" };
-const SB_OK = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length > 20;
+const SB_OK = true; // Activé pour Cloudflare D1
 const TWITCH_OK = /^[A-Za-z0-9_]{3,25}$/.test(TWITCH_CHANNEL_NAME) && TWITCH_CHANNEL_NAME !== "ton_pseudo_twitch";
 const TWITCH_URL = "https://www.twitch.tv/" + TWITCH_CHANNEL_NAME;
 // Les pages se préviennent entre elles par de petits signaux (session, site, persos, calendrier)
@@ -195,8 +195,8 @@ function injecterMiseEnPage(){
     <div class="droite">
       <a class="tw" id="tw-badge" href="#" target="_blank" rel="noopener" hidden aria-label="Chaîne Twitch">${ICONE_TWITCH}<i class="pt" aria-hidden="true"></i><span id="tw-txt">Twitch</span></a>
       <div class="compte" id="compte">
-        <button type="button" class="btn-compte" id="btn-connexion"${SB_OK ? " hidden" : ""}><span class="long">Connexion / S’inscrire</span><span class="court">Connexion</span></button>
-        <a class="btn-compte" id="btn-profil" href="roster.html#mon-personnage" hidden>${ICONE_USER}<span id="compte-pseudo"></span></a>
+<button type="button" class="btn-compte" id="btn-connexion"><span class="long">Connexion / S’inscrire</span><span class="court">Connexion</span></button>
+<a class="btn-compte" id="btn-profil" href="roster.html#mon-personnage" hidden>${ICONE_USER}<span id="compte-pseudo"></span></a>
         <button type="button" class="btn-compte discret" id="btn-deconnexion" hidden>Déconnexion</button>
       </div>
       <button type="button" class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
