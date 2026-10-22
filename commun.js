@@ -1,6 +1,6 @@
 /* =====================================================================
    commun.js : ce qui est partagé par TOUTES les pages (menu, pied de page,
-   hymne, comptes membres D1, Espace Officier).
+   hymne, comptes membres D1, Espace Officier, Armurerie).
    ===================================================================== */
 const $ = s => document.querySelector(s);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -345,6 +345,43 @@ function ouvrirPerso(p){
 }
 if($("#perso-fermer")) $("#perso-fermer").onclick = () => dPerso.close();
 if(dPerso) dPerso.addEventListener("click", e => { if(e.target === dPerso) dPerso.close(); });
+
+// Soumission du formulaire de personnage via l'API Cloudflare
+if($("#f-perso")) {
+  $("#f-perso").addEventListener("submit", async e => {
+    e.preventDefault();
+    const v = id => $("#" + id).value.trim();
+    const bouton = e.target.querySelector("button[type=submit]");
+    const ligne = {
+      id: v("p-id") || undefined,
+      nom: v("p-nom"),
+      classe: v("p-classe"),
+      specialisation: v("p-spe"),
+      role: v("p-role"),
+      niveau: Math.max(1, Math.min(90, parseInt(v("p-niveau"), 10) || 1)),
+      metier1: v("p-m1") || null,
+      metier2: v("p-m2") || null,
+      user_id: session?.user?.id
+    };
+    if(bouton) bouton.disabled = true;
+    try {
+      const res = await fetch("/api/admin-membres", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "sauvegarder_personnage", personnage: ligne, userId: session?.user?.id })
+      });
+      const d = await res.json();
+      if(!res.ok) throw new Error(d.erreur || "Erreur lors de l'enregistrement du personnage");
+      if(dPerso) dPerso.close();
+      signaler("persos");
+      signaler("calendrier");
+    } catch(err) {
+      if($("#perso-retour")) $("#perso-retour").innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+    } finally {
+      if(bouton) bouton.disabled = false;
+    }
+  });
+}
 
 /* ---------- Espace Officier ---------- */
 const adm = $("#admin"), login = $("#login"), tableau = $("#tableau");
