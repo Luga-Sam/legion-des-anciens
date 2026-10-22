@@ -159,6 +159,40 @@ footer{padding-bottom:5.5rem}
 .l-officier{background:none;border:0;color:var(--doux);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
 .l-officier:hover{color:var(--or-clair)}
 
+/* Comptes membres et armurerie */
+[hidden]{display:none!important}
+.compte{display:flex;align-items:center;gap:.5rem;margin-left:.8rem}
+.btn-compte{display:inline-flex;align-items:center;gap:.4rem;font:700 .85rem var(--corps);color:var(--or-clair);background:rgba(12,18,15,.6);border:1px solid var(--or);border-radius:999px;padding:.3rem .9rem;cursor:pointer;text-decoration:none;white-space:nowrap;max-width:14rem}
+.btn-compte:hover{background:rgba(201,162,75,.18);color:#fff}
+.btn-compte.discret{border-color:var(--ligne);color:var(--doux)}
+.btn-compte svg{width:1rem;height:1rem;fill:currentColor;flex:none}
+#compte-pseudo{overflow:hidden;text-overflow:ellipsis}
+.btn-compte .court{display:none}
+@media(max-width:640px){#btn-deconnexion{display:none}}
+@media(max-width:520px){.btn-compte .long{display:none}.btn-compte .court{display:inline}.tw:not(.live) #tw-txt{display:none}.logo{font-size:.85rem}.compte{margin-left:.4rem}#compte-pseudo{max-width:6rem}}
+.verrou{grid-column:1/-1;text-align:center;padding:3rem 1.5rem;border:1px dashed var(--or);background:rgba(201,162,75,.05);display:grid;gap:1rem;justify-items:center}
+.verrou svg{width:2.4rem;height:2.4rem;fill:var(--or)}
+.verrou p{max-width:56ch;margin:0}
+.verrou .actions{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+.armu-barre{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1.4rem}
+.armu-barre .info{color:var(--doux);font-size:.95rem;margin-right:auto}
+.persos{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.2rem}
+.perso{display:flex;gap:1rem;align-items:center;padding:1.1rem 1.2rem;background:radial-gradient(120% 140% at 0% 0%,var(--glow),transparent 60%),linear-gradient(160deg,#1c2520,#0f1512);border:1px solid rgba(201,162,75,.55);border-left:4px solid var(--cl);box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),0 0 24px var(--glow)}
+.perso-embleme{position:relative;width:4.6rem;height:4.6rem;flex:none;display:grid;place-items:center}
+.perso-embleme svg{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:var(--cl);stroke-width:1.4;opacity:.9}
+.perso-embleme b{font:900 1.9rem var(--titre);color:var(--cl);text-shadow:0 2px 8px #000}
+.perso-corps{min-width:0;display:grid;gap:.2rem}
+.perso h3{font-size:1.25rem;color:var(--cl);letter-spacing:.04em;overflow-wrap:anywhere}
+.perso-classe{color:var(--texte)}
+.perso-role{display:inline-flex;gap:.35rem;align-items:center;font-weight:700;color:var(--rc);font-size:.95rem}
+.perso-meta{color:var(--doux);font-size:.92rem}
+.perso-actions{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+.lien-perso{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--cl);cursor:pointer;text-decoration:underline dotted}
+.lien-bouton{background:none;border:0;color:var(--doux);text-decoration:underline;cursor:pointer;font:inherit;margin-top:.8rem;padding:0}
+.petite{font-size:.92rem}
+.a-ligne.attente{border-left-color:var(--forge)}
+#fiche-carte .perso{margin-top:1rem}
+
 /* Calendrier de raid */
 .cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,430px),1fr));gap:1.2rem;align-items:start}
 .evt{background:linear-gradient(160deg,var(--pierre2),var(--pierre));border:1px solid var(--ligne);border-top:3px solid var(--hurle);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:.9rem}
@@ -287,12 +321,18 @@ dialog.large{width:min(920px,100% - 1.5rem)}
       <a href="#presentation">Qui sommes-nous ?</a>
       <a href="#recrutement">Recrutement</a>
       <a href="#calendrier">Calendrier</a>
+      <a href="#armurerie" id="nav-perso" hidden>Mon personnage</a>
       <a href="#progression">Progression</a>
       <a href="#" class="js-postuler">Postuler</a>
     </nav>
     <a class="tw" id="tw-badge" href="#" target="_blank" rel="noopener" hidden aria-label="Chaîne Twitch">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.43l-3 3v-3H6.857V1.714h13.714Z"/></svg><i class="pt" aria-hidden="true"></i><span id="tw-txt">Twitch</span>
     </a>
+    <div class="compte" id="compte">
+      <button type="button" class="btn-compte" id="btn-connexion"><span class="long">Connexion / S’inscrire</span><span class="court">Connexion</span></button>
+      <a class="btn-compte" id="btn-profil" href="#armurerie" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z"/></svg><span id="compte-pseudo"></span></a>
+      <button type="button" class="btn-compte discret" id="btn-deconnexion" hidden>Déconnexion</button>
+    </div>
   </div>
 </header>
 
@@ -413,6 +453,19 @@ dialog.large{width:min(920px,100% - 1.5rem)}
     </div>
   </section>
 
+  <section id="armurerie" hidden>
+    <div class="wrap">
+      <h2>Mon Personnage</h2>
+      <p class="intro">Votre armurerie. Enregistrez vos personnages une seule fois : ils vous sont proposés automatiquement à chaque inscription à un raid.</p>
+      <div class="armu-barre">
+        <button type="button" class="btn btn-or petit" id="perso-ajouter">+ Ajouter un personnage</button>
+        <span class="info" id="armu-statut"></span>
+        <button type="button" class="btn btn-ligne petit" id="armu-deco">Se déconnecter</button>
+      </div>
+      <div class="persos" id="persos"></div>
+    </div>
+  </section>
+
   <section id="live" hidden>
     <div class="wrap">
       <h2>Le Live de la Guilde</h2>
@@ -453,23 +506,23 @@ dialog.large{width:min(920px,100% - 1.5rem)}
 <dialog id="admin" class="large" aria-labelledby="admin-titre">
   <button class="fermer" type="button" aria-label="Fermer" id="admin-fermer">&times;</button>
   <h2 id="admin-titre">Espace Officier</h2>
-  <form id="login">
-    <p class="intro" style="margin-bottom:0">Réservé au Maître de Guilde et aux Officiers.</p>
-    <label for="code">Code d’accès
-      <input id="code" type="password" autocomplete="current-password" required></label>
-    <button class="btn btn-or" type="submit">Se connecter</button>
-    <div id="login-retour" role="status"></div>
-  </form>
-  <div id="tableau" hidden>
-    <div class="admin-barre"><span>Connecté en tant qu’officier</span>
-      <button class="btn btn-ligne petit" type="button" id="deconnexion">Se déconnecter</button></div>
+  <div class="onglets onglets-admin" role="group" aria-label="Sections de l’Espace Officier">
+    <button type="button" data-p="site" aria-pressed="true">Annonce, recrutement, progression</button>
+    <button type="button" data-p="raids" aria-pressed="false">Calendrier &amp; roster</button>
+    <button type="button" data-p="membres" aria-pressed="false">Membres<span id="compteur-membres"></span></button>
+  </div>
 
-    <div class="onglets" role="group" aria-label="Sections de l’Espace Officier">
-      <button type="button" data-p="site" aria-pressed="true">Annonce, recrutement, progression</button>
-      <button type="button" data-p="raids" aria-pressed="false">Calendrier &amp; roster</button>
-    </div>
-
-    <div id="panneau-site">
+  <div id="panneau-site">
+    <form id="login">
+      <p class="intro" style="margin-bottom:0">Cette partie est protégée par le code d’accès des officiers.</p>
+      <label for="code">Code d’accès
+        <input id="code" type="password" autocomplete="current-password" required></label>
+      <button class="btn btn-or" type="submit">Se connecter</button>
+      <div id="login-retour" role="status"></div>
+    </form>
+    <div id="tableau" hidden>
+      <div class="admin-barre"><span>Code officier validé</span>
+        <button class="btn btn-ligne petit" type="button" id="deconnexion">Verrouiller</button></div>
     <h3>Annonce de guilde</h3>
     <label for="a-annonce">Message affiché en bannière sur la page d’accueil (laisser vide pour ne rien afficher)
       <textarea id="a-annonce" maxlength="300" style="min-height:80px" placeholder="Prochain raid jeudi à 20h30…"></textarea></label>
@@ -486,8 +539,15 @@ dialog.large{width:min(920px,100% - 1.5rem)}
       <div id="a-retour" role="status"></div>
     </div>
     </div>
+  </div>
 
-    <div id="panneau-raids" hidden>
+  <div id="panneau-raids" hidden>
+    <div id="raids-gate" class="verrou">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>
+      <p>Cette partie est réservée aux officiers connectés avec leur compte membre.</p>
+      <button type="button" class="btn btn-or js-ouvrir-auth">Se connecter</button>
+    </div>
+    <div id="raids-contenu" hidden>
       <h3>Créer un raid</h3>
       <form id="f-raid">
         <div class="a-grille">
@@ -502,11 +562,24 @@ dialog.large{width:min(920px,100% - 1.5rem)}
         </div>
         <button class="btn btn-or" type="submit" style="width:auto;padding-inline:2rem">Créer le raid</button>
       </form>
-
       <h3>Raids et roster</h3>
-      <p class="intro" style="margin-bottom:1rem">Les changements faits ici (statut, roster, archivage) s’appliquent tout de suite, sans bouton « Sauvegarder ».</p>
+      <p class="intro" style="margin-bottom:1rem">Les changements faits ici (statut, roster, archivage) s’appliquent tout de suite.</p>
       <div id="a-cal"></div>
       <div id="c-retour" role="status"></div>
+    </div>
+  </div>
+
+  <div id="panneau-membres" hidden>
+    <div id="membres-gate" class="verrou">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>
+      <p>Cette partie est réservée aux officiers connectés avec leur compte membre.</p>
+      <button type="button" class="btn btn-or js-ouvrir-auth">Se connecter</button>
+    </div>
+    <div id="membres-contenu" hidden>
+      <h3>Comptes des membres</h3>
+      <p class="intro" style="margin-bottom:1rem">Les nouveaux comptes sont « en attente » : passez-les en « Membre » pour leur ouvrir le calendrier de raid.</p>
+      <div id="a-membres" class="a-ins"></div>
+      <div id="m-retour" role="status"></div>
     </div>
   </div>
 </dialog>
@@ -517,34 +590,97 @@ dialog.large{width:min(920px,100% - 1.5rem)}
   <h2 id="ins-titre">S’inscrire</h2>
   <p class="intro" style="margin-bottom:0">Les officiers valident ensuite la composition du roster.</p>
   <form id="f-ins">
-    <p class="hp"><label>Ne pas remplir <input id="i-piege" tabindex="-1" autocomplete="off"></label></p>
-    <label for="i-pseudo">Pseudo du personnage
-      <input id="i-pseudo" required maxlength="24" autocomplete="off"></label>
-    <label for="i-classe">Classe
-      <select id="i-classe" required><option value="">Choisir une classe</option></select></label>
-    <label for="i-spe">Spécialisation
-      <select id="i-spe" required disabled><option value="">Choisissez d’abord une classe</option></select></label>
-    <label for="i-role">Rôle
-      <select id="i-role" required>
+    <div id="ins-sans-perso" hidden>
+      <p style="margin-top:1rem">Pour vous inscrire, enregistrez d’abord un personnage dans votre armurerie : il vous sera proposé automatiquement ensuite.</p>
+      <button type="button" class="btn btn-or" id="ins-creer">Créer mon personnage</button>
+    </div>
+    <div id="ins-champs">
+      <label for="i-perso">Mon personnage
+        <select id="i-perso" required></select></label>
+      <label for="i-role">Rôle pour ce raid
+        <select id="i-role" required>
+          <option value="dps">DPS (épée)</option>
+          <option value="tank">Tank (bouclier)</option>
+          <option value="soigneur">Soigneur (croix)</option>
+        </select></label>
+      <label for="i-presence">Présence
+        <select id="i-presence" required>
+          <option value="present">Présent</option>
+          <option value="retard">En retard</option>
+          <option value="absent">Absent</option>
+        </select></label>
+      <div id="i-heure-bloc" hidden>
+        <label for="i-heure">Heure d’arrivée prévue
+          <input id="i-heure" type="time"></label>
+      </div>
+      <label for="i-note">Note (facultatif)
+        <input id="i-note" maxlength="120" placeholder="Ex : disponible jusqu’à 23h30" autocomplete="off"></label>
+      <button class="btn btn-or" type="submit">Valider mon inscription</button>
+    </div>
+    <div id="ins-retour" role="status"></div>
+  </form>
+</dialog>
+
+<!-- Connexion / création de compte -->
+<dialog id="dlg-auth" aria-labelledby="auth-titre">
+  <button class="fermer" type="button" aria-label="Fermer" id="auth-fermer">&times;</button>
+  <h2 id="auth-titre">Espace membres</h2>
+  <div class="onglets" id="auth-onglets" role="group" aria-label="Connexion ou création de compte" style="margin-top:1rem">
+    <button type="button" data-m="connexion" aria-pressed="true">Connexion</button>
+    <button type="button" data-m="inscription" aria-pressed="false">Créer un compte</button>
+  </div>
+  <p class="intro" id="auth-indispo" hidden style="margin-top:1rem">Les comptes membres ne sont pas encore activés sur ce site. Revenez bientôt, ou contactez un officier sur notre Discord.</p>
+  <form id="f-auth">
+    <div id="auth-pseudo-bloc" hidden>
+      <label for="au-pseudo">Pseudo affiché sur le site
+        <input id="au-pseudo" maxlength="24" minlength="2" autocomplete="nickname"></label>
+    </div>
+    <div id="auth-email-bloc">
+      <label for="au-email">Adresse e-mail
+        <input id="au-email" type="email" required autocomplete="email"></label>
+    </div>
+    <label for="au-mdp"><span id="au-mdp-lib">Mot de passe</span>
+      <input id="au-mdp" type="password" required minlength="8" autocomplete="current-password"></label>
+    <button class="btn btn-or" type="submit" id="au-envoi">Se connecter</button>
+    <button type="button" class="lien-bouton" id="au-oubli">Mot de passe oublié ?</button>
+    <p class="intro petite" id="au-aide" style="margin:.8rem 0 0"></p>
+    <div id="auth-retour" role="status"></div>
+  </form>
+</dialog>
+
+<!-- Fiche personnage -->
+<dialog id="dlg-perso" aria-labelledby="perso-titre">
+  <button class="fermer" type="button" aria-label="Fermer" id="perso-fermer">&times;</button>
+  <h2 id="perso-titre">Nouveau personnage</h2>
+  <form id="f-perso">
+    <input type="hidden" id="p-id">
+    <label for="p-nom">Nom du personnage
+      <input id="p-nom" required minlength="2" maxlength="24" autocomplete="off"></label>
+    <label for="p-classe">Classe
+      <select id="p-classe" required><option value="">Choisir une classe</option></select></label>
+    <label for="p-spe">Spécialisation principale
+      <select id="p-spe" required disabled><option value="">Choisissez d’abord une classe</option></select></label>
+    <label for="p-role">Rôle principal
+      <select id="p-role" required>
         <option value="dps">DPS (épée)</option>
         <option value="tank">Tank (bouclier)</option>
         <option value="soigneur">Soigneur (croix)</option>
       </select></label>
-    <label for="i-presence">Présence
-      <select id="i-presence" required>
-        <option value="present">Présent</option>
-        <option value="retard">En retard</option>
-        <option value="absent">Absent</option>
-      </select></label>
-    <div id="i-heure-bloc" hidden>
-      <label for="i-heure">Heure d’arrivée prévue
-        <input id="i-heure" type="time"></label>
-    </div>
-    <label for="i-note">Note (facultatif)
-      <input id="i-note" maxlength="120" placeholder="Ex : disponible jusqu’à 23h30" autocomplete="off"></label>
-    <button class="btn btn-or" type="submit">Valider mon inscription</button>
-    <div id="ins-retour" role="status"></div>
+    <label for="p-niveau">Niveau
+      <input id="p-niveau" type="number" min="1" max="90" required></label>
+    <label for="p-m1">Premier métier (facultatif)
+      <select id="p-m1"><option value="">Aucun</option></select></label>
+    <label for="p-m2">Second métier (facultatif)
+      <select id="p-m2"><option value="">Aucun</option></select></label>
+    <button class="btn btn-or" type="submit">Enregistrer</button>
+    <div id="perso-retour" role="status"></div>
   </form>
+</dialog>
+
+<dialog id="dlg-fiche" aria-label="Fiche du personnage">
+  <button class="fermer" type="button" aria-label="Fermer" id="fiche-fermer">&times;</button>
+  <h2>Armurerie</h2>
+  <div id="fiche-carte"></div>
 </dialog>
 
 <!-- Lecteur de l'hymne -->
@@ -612,6 +748,12 @@ const LANCER_AUTO   = true;
 //        (Si vous remplacez le nom par « ton_pseudo_twitch », tous les éléments Twitch disparaissent.)
 const TWITCH_CHANNEL_NAME = "lugasam";
 const TWITCH_CHAT = true;
+
+// 1 quater. Comptes membres (Supabase) : l'adresse de votre projet et sa clé PUBLIQUE (voir le guide).
+//           Cette clé est faite pour être visible : la sécurité est assurée par les règles de la base de données.
+//           Tant que ces deux lignes sont vides, les comptes membres restent désactivés.
+const SUPABASE_URL = "https://zhjqzjfcpjspowqlcbdx.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_dQSGAcOEP2Iz7bvgKubV7Q_LEQ3H_3C";
 
 // 2. Besoins de recrutement (valeurs de départ : ensuite gérées depuis l’Espace Officier)
 //    statut : "ouvert", "ferme" ou "prio"   |   note : texte libre
@@ -736,7 +878,13 @@ fetch("/api/data", { cache:"no-store" })
   .then(d => { if(d && Object.keys(d).length){ appliquer(d); toutDessiner(); } })
   .catch(() => {});
 
-/* Calendrier de raid et inscriptions */
+/* ===== Comptes membres, armurerie et calendrier de raid (Supabase) ===== */
+const SB_OK = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length > 20;
+let sb = null, session = null, profil = null, mesPersos = [], evts = [], evtCourant = "", persoConnus = {};
+const acces = () => (SB_OK && session && profil) ? profil.role : "visiteur";   // visiteur | en_attente | refuse | membre | officier
+const estMembre = () => acces() === "membre" || acces() === "officier";
+const estOfficier = () => acces() === "officier";
+
 const ROLE_LIBELLE = { tank:"Tank", soigneur:"Soigneur", dps:"DPS" };
 const ROLE_PLURIEL = { tank:"Tanks", soigneur:"Soigneurs", dps:"DPS" };
 const ROLE_ICONE = {
@@ -744,6 +892,7 @@ const ROLE_ICONE = {
   soigneur:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>',
   dps:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M20 4 10 14M7 11l6 6M8.5 15.5 4 20"/></svg>'
 };
+const CADENAS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg>';
 const ROLE_DEFAUT = {
   Guerrier:{ Armes:"dps", Fureur:"dps", Protection:"tank" },
   Paladin:{ "Sacré":"soigneur", Protection:"tank", Vindicte:"dps" },
@@ -752,48 +901,254 @@ const ROLE_DEFAUT = {
   Druide:{ "Équilibre":"dps", "Combat farouche":"dps", Restauration:"soigneur" }
 };
 const roleDe = (c, sp) => ROLE_DEFAUT[c]?.[sp] || "dps";
+const METIERS = ["Alchimie","Forge","Ingénierie","Enchantement","Couture","Travail du cuir","Herboristerie","Minage","Dépeçage","Cuisine","Secourisme","Pêche"];
 const PRES = { present:"Présent", retard:"En retard", absent:"Absent" };
 const ETIQ = { ouvert:"Ouvert aux inscriptions", complet:"Complet", annule:"Annulé" };
 const jourFmt = new Intl.DateTimeFormat("fr-FR", { weekday:"long", day:"numeric", month:"long" });
 const couleurDe = n => CLASSES.find(c => c.nom === n)?.couleur || "#d9d6c9";
 const debutDe = r => new Date(`${r.date}T${r.debut}`);
 const maj = t => t.charAt(0).toUpperCase() + t.slice(1);
-let evts = [], evtCourant = "", jetonMemoire = "";
+const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+const hhmm = t => String(t || "").slice(0, 5);
 
-// Le « jeton » prouve qu'une inscription vient de ce navigateur : lui seul peut la modifier ou la retirer
-function jeton(){
-  try{
-    let j = localStorage.getItem("legion_jeton");
-    if(!j){ j = crypto.randomUUID(); localStorage.setItem("legion_jeton", j); }
-    return j;
-  }catch{ return jetonMemoire || (jetonMemoire = crypto.randomUUID()); }
-}
-function mes(){ try{ return JSON.parse(localStorage.getItem("legion_mes") || "{}"); }catch{ return {}; } }
-function retenir(raidId, pseudo){
-  try{
-    const m = mes(); m[raidId] = m[raidId] || [];
-    if(!m[raidId].includes(pseudo.toLowerCase())) m[raidId].push(pseudo.toLowerCase());
-    localStorage.setItem("legion_mes", JSON.stringify(m));
-    localStorage.setItem("legion_pseudo", pseudo);
-  }catch{}
-}
-function oublier(raidId, pseudo){
-  try{ const m = mes(); m[raidId] = (m[raidId] || []).filter(x => x !== pseudo.toLowerCase()); localStorage.setItem("legion_mes", JSON.stringify(m)); }catch{}
-}
-async function apiCal(corps){
-  const r = await fetch("/api/raids", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(corps) });
-  let d = {}; try{ d = await r.json(); }catch{}
-  return { ok:r.ok, statut:r.status, ...d };
+function messageErreur(e){
+  const m = String(e?.message || e || "");
+  if(/Invalid login credentials/i.test(m)) return "E-mail ou mot de passe incorrect.";
+  if(/Email not confirmed/i.test(m)) return "Adresse e-mail non confirmée : cliquez sur le lien reçu par e-mail.";
+  if(/already registered|already been registered/i.test(m)) return "Cette adresse e-mail est déjà utilisée.";
+  if(/Password should be at least/i.test(m)) return "Le mot de passe doit contenir au moins 8 caractères.";
+  if(/rate limit|too many|security purposes/i.test(m)) return "Trop de tentatives. Patientez quelques minutes avant de réessayer.";
+  if(/row-level security|permission denied/i.test(m)) return "Action refusée : vérifiez que votre compte est validé et que le raid est ouvert.";
+  if(/duplicate key|unique/i.test(m)) return "Cette inscription existe déjà.";
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return "Connexion impossible. Vérifiez votre connexion internet.";
+  return "Une erreur est survenue : " + m;
 }
 
+/* ---------- Session et interface ---------- */
+function initSupabase(){
+  sb = supabase.createClient(SUPABASE_URL.replace(/\/$/, ""), SUPABASE_ANON_KEY);
+  sb.auth.onAuthStateChange((evt, s) => {
+    session = s;
+    if(evt === "PASSWORD_RECOVERY") ouvrirAuth("nouveau");
+    setTimeout(majSession, 0);                    // on n'appelle pas Supabase depuis son propre rappel
+  });
+  sb.auth.getSession().then(({ data }) => { session = data.session; majSession(); });
+}
+if(SB_OK){
+  const sc = document.createElement("script");
+  sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.1";
+  sc.onload = initSupabase;
+  sc.onerror = () => majInterface();
+  document.head.append(sc);
+}
+
+let canalRT = null;
+function realtime(){
+  if(!sb) return;
+  if(estMembre() && !canalRT){
+    canalRT = sb.channel("legion")
+      .on("postgres_changes", { event:"*", schema:"public", table:"inscriptions" }, planifierCal)
+      .on("postgres_changes", { event:"*", schema:"public", table:"raids" }, planifierCal)
+      .subscribe();
+  }else if(!estMembre() && canalRT){ sb.removeChannel(canalRT); canalRT = null; }
+}
+async function majSession(){
+  profil = null; mesPersos = [];
+  if(sb && session){
+    const { data } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+    profil = data;
+    if(profil) await chargerPersos();
+  }
+  majInterface();
+  realtime();
+  if(estMembre()) chargerCal(); else { evts = []; dessinerCal(); }
+}
+function majInterface(){
+  const connecte = !!(SB_OK && session && profil), a = acces();
+  $("#btn-connexion").hidden = connecte;
+  $("#btn-profil").hidden = !connecte;
+  $("#btn-deconnexion").hidden = !connecte;
+  $("#nav-perso").hidden = !connecte;
+  $("#armurerie").hidden = !connecte;
+  if(connecte){
+    $("#compte-pseudo").textContent = profil.pseudo;
+    $("#armu-statut").textContent = a === "officier" ? "Compte officier" : a === "membre" ? "Compte membre validé" : a === "refuse" ? "Accès non accepté : contactez un officier" : "Compte en attente de validation par un officier";
+  }
+  dessinerPersos(); dessinerCal(); majAdminAcces();
+}
+setInterval(() => { if(document.visibilityState === "visible" && sb && session && !estMembre()) majSession(); }, 60000);  // détecte la validation du compte
+
+/* ---------- Fenêtre de connexion / création de compte ---------- */
+const dAuth = $("#dlg-auth");
+let modeAuth = "connexion";
+function modeAuthSet(m){
+  modeAuth = m;
+  const ins = m === "inscription", nouveau = m === "nouveau";
+  $("#auth-retour").innerHTML = "";
+  $("#auth-onglets").hidden = nouveau;
+  document.querySelectorAll("#auth-onglets button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === m));
+  $("#auth-pseudo-bloc").hidden = !ins;
+  $("#auth-email-bloc").hidden = nouveau;
+  $("#au-email").required = !nouveau; $("#au-pseudo").required = ins;
+  $("#au-mdp-lib").textContent = nouveau ? "Nouveau mot de passe" : "Mot de passe";
+  $("#au-mdp").autocomplete = ins || nouveau ? "new-password" : "current-password";
+  $("#au-envoi").textContent = ins ? "Créer mon compte" : nouveau ? "Enregistrer le mot de passe" : "Se connecter";
+  $("#au-oubli").hidden = m !== "connexion";
+  $("#au-aide").textContent = ins ? "Un officier validera votre compte avant de vous donner accès au calendrier de raid." : "";
+  $("#auth-titre").textContent = nouveau ? "Nouveau mot de passe" : "Espace membres";
+}
+function ouvrirAuth(m = "connexion"){
+  $("#f-auth").hidden = !SB_OK; $("#auth-indispo").hidden = SB_OK;
+  if(SB_OK) modeAuthSet(m); else $("#auth-onglets").hidden = true;
+  if(!dAuth.open) dAuth.showModal();
+}
+$("#auth-onglets").addEventListener("click", e => { if(e.target.dataset.m) modeAuthSet(e.target.dataset.m); });
+$("#auth-fermer").onclick = () => dAuth.close();
+dAuth.addEventListener("click", e => { if(e.target === dAuth) dAuth.close(); });
+$("#btn-connexion").onclick = () => ouvrirAuth("connexion");
+$("#btn-deconnexion").onclick = $("#armu-deco").onclick = () => { if(sb) sb.auth.signOut(); };
+
+$("#f-auth").addEventListener("submit", async e => {
+  e.preventDefault();
+  if(!sb) return;
+  const retour = $("#auth-retour"), bouton = $("#au-envoi"), email = $("#au-email").value.trim(), mdp = $("#au-mdp").value;
+  bouton.disabled = true; retour.innerHTML = "";
+  try{
+    if(modeAuth === "connexion"){
+      const { error } = await sb.auth.signInWithPassword({ email, password:mdp });
+      if(error) throw error;
+      $("#au-mdp").value = ""; dAuth.close();
+    }else if(modeAuth === "inscription"){
+      const { data, error } = await sb.auth.signUp({ email, password:mdp, options:{ data:{ pseudo:$("#au-pseudo").value.trim() } } });
+      if(error) throw error;
+      if(data.user && data.user.identities && data.user.identities.length === 0) throw new Error("already registered");
+      if(data.session){ $("#au-mdp").value = ""; dAuth.close(); }
+      else retour.innerHTML = '<div class="msg">Compte créé ! Confirmez votre adresse e-mail grâce au message que vous allez recevoir, puis connectez-vous.</div>';
+    }else{
+      const { error } = await sb.auth.updateUser({ password:mdp });
+      if(error) throw error;
+      $("#au-mdp").value = ""; dAuth.close(); alert("Votre mot de passe a été modifié.");
+    }
+  }catch(err){ retour.innerHTML = `<div class="msg err">${esc(messageErreur(err))}</div>`; }
+  bouton.disabled = false;
+});
+$("#au-oubli").onclick = async () => {
+  const retour = $("#auth-retour"), email = $("#au-email").value.trim();
+  if(!email){ retour.innerHTML = '<div class="msg err">Saisissez d’abord votre adresse e-mail ci-dessus.</div>'; return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo:location.origin + location.pathname });
+  retour.innerHTML = error ? `<div class="msg err">${esc(messageErreur(error))}</div>` : '<div class="msg">Si cette adresse correspond à un compte, un lien pour choisir un nouveau mot de passe vient d’être envoyé.</div>';
+};
+
+/* ---------- Armurerie : mes personnages ---------- */
+async function chargerPersos(){
+  const { data } = await sb.from("personnages").select("*").eq("user_id", session.user.id).order("cree_le");
+  mesPersos = data || [];
+  mesPersos.forEach(p => { persoConnus[p.id] = { ...p, joueur:profil?.pseudo || "" }; });
+}
+function carteDe(p, actions = ""){
+  const c = couleurDe(p.classe), metiers = [p.metier1, p.metier2].filter(Boolean);
+  return `<article class="perso" style="--cl:${c};--glow:${hexA(c, .3)}">
+    <div class="perso-embleme" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47"/><circle cx="50" cy="50" r="41" stroke-dasharray="3 5"/><path d="M50 8 56 44 92 50 56 56 50 92 44 56 8 50 44 44Z"/></svg><b>${esc(p.classe.charAt(0))}</b></div>
+    <div class="perso-corps">
+      <h3>${esc(p.nom)}</h3>
+      <div class="perso-classe">${esc(p.classe)} · ${esc(p.specialisation)}</div>
+      <div class="perso-role role-${esc(p.role)}">${ROLE_ICONE[p.role] || ""} ${ROLE_LIBELLE[p.role] || ""}</div>
+      <div class="perso-meta">Niveau ${+p.niveau}${metiers.length ? " · " + metiers.map(esc).join(", ") : ""}</div>
+      ${p.joueur ? `<div class="perso-meta">Joueur : ${esc(p.joueur)}</div>` : ""}
+      ${actions}
+    </div></article>`;
+}
+function dessinerPersos(){
+  const el = $("#persos");
+  if(!profil){ el.innerHTML = ""; return; }
+  el.innerHTML = mesPersos.map(p => carteDe({ ...p, joueur:"" }, `<div class="perso-actions">
+      <button type="button" class="btn btn-ligne petit" data-edit="${esc(p.id)}">Modifier</button>
+      <button type="button" class="btn btn-ligne petit" data-suppr-perso="${esc(p.id)}">Supprimer</button></div>`)).join("")
+    || '<p class="intro">Aucun personnage pour le moment. Ajoutez le vôtre : il sera proposé automatiquement à chaque inscription à un raid.</p>';
+}
+const dPerso = $("#dlg-perso"), pClasse = $("#p-classe"), pSpe = $("#p-spe");
+CLASSES.forEach(c => pClasse.add(new Option(c.nom, c.nom)));
+[$("#p-m1"), $("#p-m2")].forEach(s => METIERS.forEach(m => s.add(new Option(m, m))));
+pClasse.onchange = () => {
+  const c = CLASSES.find(x => x.nom === pClasse.value);
+  pSpe.length = 1; pSpe.disabled = !c;
+  pSpe.options[0].text = c ? "Choisir une spécialisation" : "Choisissez d’abord une classe";
+  if(c) c.specs.forEach(sp => pSpe.add(new Option(sp, sp)));
+};
+pSpe.onchange = () => { if(pSpe.value) $("#p-role").value = roleDe(pClasse.value, pSpe.value); };
+function ouvrirPerso(p){
+  $("#perso-retour").innerHTML = "";
+  $("#perso-titre").textContent = p ? "Modifier mon personnage" : "Nouveau personnage";
+  $("#p-id").value = p ? p.id : "";
+  $("#p-nom").value = p ? p.nom : "";
+  pClasse.value = p ? p.classe : ""; pClasse.onchange();
+  pSpe.value = p ? p.specialisation : "";
+  $("#p-role").value = p ? p.role : "dps";
+  $("#p-niveau").value = p ? p.niveau : "";
+  $("#p-m1").value = p?.metier1 || ""; $("#p-m2").value = p?.metier2 || "";
+  dPerso.showModal();
+}
+$("#perso-ajouter").onclick = () => ouvrirPerso(null);
+$("#perso-fermer").onclick = () => dPerso.close();
+dPerso.addEventListener("click", e => { if(e.target === dPerso) dPerso.close(); });
+$("#persos").addEventListener("click", async e => {
+  const b = e.target.closest("button");
+  if(!b) return;
+  if(b.dataset.edit) ouvrirPerso(mesPersos.find(p => p.id === b.dataset.edit));
+  else if(b.dataset.supprPerso){
+    const p = mesPersos.find(x => x.id === b.dataset.supprPerso);
+    if(!confirm("Supprimer " + p.nom + " ? Ses inscriptions aux raids seront aussi supprimées.")) return;
+    const { error } = await sb.from("personnages").delete().eq("id", p.id);
+    if(error) return alert(messageErreur(error));
+    await chargerPersos(); dessinerPersos(); planifierCal();
+  }
+});
+$("#f-perso").addEventListener("submit", async e => {
+  e.preventDefault();
+  const v = id => $("#" + id).value.trim(), bouton = e.target.querySelector("button[type=submit]");
+  const ligne = { nom:v("p-nom"), classe:v("p-classe"), specialisation:v("p-spe"), role:v("p-role"),
+    niveau:Math.max(1, Math.min(90, parseInt(v("p-niveau"), 10) || 1)), metier1:v("p-m1") || null, metier2:v("p-m2") || null };
+  bouton.disabled = true;
+  const id = v("p-id");
+  const { error } = id ? await sb.from("personnages").update(ligne).eq("id", id)
+                       : await sb.from("personnages").insert({ ...ligne, user_id:session.user.id });
+  bouton.disabled = false;
+  if(error){ $("#perso-retour").innerHTML = `<div class="msg err">${esc(messageErreur(error))}</div>`; return; }
+  dPerso.close(); await chargerPersos(); dessinerPersos(); planifierCal();
+});
+$("#dlg-fiche").addEventListener("click", e => { if(e.target === e.currentTarget || e.target.id === "fiche-fermer") e.currentTarget.close(); });
+
+/* ---------- Calendrier de raid (réservé aux membres) ---------- */
+function adapter(r){
+  return { id:r.id, titre:r.titre, date:r.date_raid, rassemblement:hhmm(r.rassemblement), debut:hhmm(r.debut), description:r.description || "",
+    compo:{ tank:r.tank, soigneur:r.soigneur, dps:r.dps }, statut:r.statut, archive:r.archive,
+    inscriptions:(r.inscriptions || []).map(i => {
+      const p = i.personnages || {}, joueur = i.profiles?.pseudo || "";
+      if(p.id) persoConnus[p.id] = { ...p, joueur };
+      return { id:i.id, userId:i.user_id, persoId:i.personnage_id, pseudo:p.nom || "?", classe:p.classe || "", spe:p.specialisation || "",
+        role:i.role, presence:i.presence, heure:hhmm(i.heure), note:i.note || "", etat:i.etat, joueur };
+    }) };
+}
+const REQUETE_RAIDS = "*, inscriptions(*, personnages(*), profiles(pseudo))";
+let tempoCal;
+function planifierCal(){ clearTimeout(tempoCal); tempoCal = setTimeout(chargerCal, 400); }
+async function chargerCal(){
+  if(!sb || !estMembre()) return;
+  const { data, error } = await sb.from("raids").select(REQUETE_RAIDS).eq("archive", false).order("date_raid");
+  if(error) return;
+  evts = (data || []).map(adapter);
+  dessinerCal();
+}
+function verrou(texte, boutons = ""){ return `<div class="verrou">${CADENAS}<p>${texte}</p>${boutons}</div>`; }
 function carteRaid(r){
-  const ins = r.inscriptions || [], moi = mes()[r.id] || [];
+  const ins = r.inscriptions || [], moi = session?.user.id;
   const actif = i => i.presence !== "absent" && i.etat !== "remplacant";
-  const ligne = i => `<li style="--cl:${couleurDe(i.classe)}"><b>${esc(i.pseudo)}</b><small>${esc(i.spe)} ${esc(i.classe)}</small>`
+  const ligne = i => `<li style="--cl:${couleurDe(i.classe)}"><button type="button" class="lien-perso" data-perso="${esc(i.persoId)}">${esc(i.pseudo)}</button><small>${esc(i.spe)} ${esc(i.classe)}</small>`
     + (i.presence === "retard" ? `<em class="pastille">En retard${i.heure ? " " + esc(i.heure) : ""}</em>` : "")
     + (i.etat === "confirme" ? '<em class="pastille ok">Confirmé</em>' : "")
+    + (i.joueur ? `<small>· ${esc(i.joueur)}</small>` : "")
     + (i.note ? `<small class="note-i">« ${esc(i.note)} »</small>` : "")
-    + (moi.includes(i.pseudo.toLowerCase()) ? `<button type="button" class="x" data-retirer="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Retirer mon inscription">✕</button>` : "")
+    + (i.userId === moi ? `<button type="button" class="x" data-retirer="${esc(i.id)}" aria-label="Retirer mon inscription">✕</button>` : "")
     + "</li>";
   let total = 0, pleins = true;
   const blocs = ["tank", "soigneur", "dps"].map(k => {
@@ -815,71 +1170,80 @@ function carteRaid(r){
     ${r.description ? `<p>${esc(r.description)}</p>` : ""}
     <div class="compo" aria-label="Composition souhaitée">${compo}</div>
     <div class="roles">${blocs}${aux("Remplaçants", ins.filter(i => i.etat === "remplacant" && i.presence !== "absent"))}${aux("Absents", ins.filter(i => i.presence === "absent"))}</div>
-    ${st === "annule" ? "" : `<button class="btn btn-or petit" type="button" data-ins="${esc(r.id)}">${st === "complet" ? "S’inscrire (liste d’attente)" : "S’inscrire"}</button>`}</article>`;
+    ${st === "annule" ? "" : `<button class="btn btn-or petit" type="button" data-ins="${esc(r.id)}">${st === "complet" ? "S’inscrire (liste d’attente)" : "S’inscrire avec mon personnage"}</button>`}</article>`;
 }
 function dessinerCal(){
+  const a = acces(), el = $("#cal");
+  if(!estMembre()){
+    if(a === "en_attente") el.innerHTML = verrou("Votre compte est en attente de validation par un officier. Le calendrier s’ouvrira dès qu’il sera approuvé.");
+    else if(a === "refuse") el.innerHTML = verrou("Votre demande d’accès n’a pas été acceptée. Contactez un officier sur notre Discord.");
+    else el.innerHTML = verrou("Cette section est réservée aux membres de La Légion des Anciens. Veuillez vous connecter ou créer un compte.",
+      '<div class="actions"><button type="button" class="btn btn-or" data-auth="connexion">Se connecter</button><button type="button" class="btn btn-ligne" data-auth="inscription">Créer un compte</button></div>');
+    return;
+  }
   const l = evts.filter(r => debutDe(r).getTime() > Date.now() - 6 * 3600e3).sort((a, b) => debutDe(a) - debutDe(b));
-  $("#cal").innerHTML = l.map(carteRaid).join("") || '<p class="intro">Aucun raid planifié pour le moment. Les prochaines dates seront annoncées ici et sur notre Discord.</p>';
+  el.innerHTML = l.map(carteRaid).join("") || '<p class="intro">Aucun raid planifié pour le moment. Les prochaines dates seront annoncées ici et sur notre Discord.</p>';
 }
-async function chargerCal(){
-  try{
-    const r = await fetch("/api/raids", { cache:"no-store" });
-    if(!r.ok) return;
-    evts = (await r.json()).raids || [];
-    dessinerCal();
-  }catch{}
-}
+setInterval(() => { if(document.visibilityState === "visible" && estMembre()) chargerCal(); }, 60000);
 dessinerCal();
-chargerCal();
-setInterval(() => { if(document.visibilityState === "visible") chargerCal(); }, 60000);   // mise à jour toutes les minutes
 
-const dIns = $("#inscription"), iClasse = $("#i-classe"), iSpe = $("#i-spe");
-CLASSES.forEach(c => iClasse.add(new Option(c.nom, c.nom)));
-iClasse.onchange = () => {
-  const c = CLASSES.find(x => x.nom === iClasse.value);
-  iSpe.length = 1; iSpe.disabled = !c;
-  iSpe.options[0].text = c ? "Choisir une spécialisation" : "Choisissez d’abord une classe";
-  if(c) c.specs.forEach(sp => iSpe.add(new Option(sp, sp)));
-};
-iSpe.onchange = () => { if(iSpe.value) $("#i-role").value = roleDe(iClasse.value, iSpe.value); };
+const dIns = $("#inscription");
+function remplirInscription(){
+  const sel = $("#i-perso");
+  sel.innerHTML = mesPersos.map(p => `<option value="${esc(p.id)}">${esc(p.nom)} · ${esc(p.classe)} ${esc(p.specialisation)} (niv. ${+p.niveau})</option>`).join("");
+  $("#ins-sans-perso").hidden = mesPersos.length > 0;
+  $("#ins-champs").hidden = mesPersos.length === 0;
+  prefillInscription();
+}
+function prefillInscription(){
+  const p = mesPersos.find(x => x.id === $("#i-perso").value);
+  if(!p) return;
+  const deja = (evts.find(r => r.id === evtCourant)?.inscriptions || []).find(i => i.persoId === p.id);
+  $("#i-role").value = deja ? deja.role : p.role;
+  $("#i-presence").value = deja ? deja.presence : "present";
+  $("#i-heure").value = deja ? deja.heure : "";
+  $("#i-note").value = deja ? deja.note : "";
+  $("#i-heure-bloc").hidden = $("#i-presence").value !== "retard";
+}
+$("#i-perso").onchange = prefillInscription;
 $("#i-presence").onchange = e => { $("#i-heure-bloc").hidden = e.target.value !== "retard"; };
 $("#ins-fermer").onclick = () => dIns.close();
 dIns.addEventListener("click", e => { if(e.target === dIns) dIns.close(); });
+$("#ins-creer").onclick = () => { dIns.close(); ouvrirPerso(null); };
 
 $("#cal").addEventListener("click", async e => {
   const b = e.target.closest("button");
   if(!b) return;
-  if(b.dataset.ins){
+  if(b.dataset.auth) ouvrirAuth(b.dataset.auth);
+  else if(b.dataset.ins){
     evtCourant = b.dataset.ins;
     const r = evts.find(x => x.id === evtCourant);
     $("#ins-titre").textContent = "S’inscrire : " + (r ? r.titre : "raid");
     $("#ins-retour").innerHTML = "";
-    try{ $("#i-pseudo").value = localStorage.getItem("legion_pseudo") || ""; }catch{}
+    remplirInscription();
     dIns.showModal();
   }else if(b.dataset.retirer){
-    if(!confirm("Retirer l’inscription de " + b.dataset.pseudo + " ?")) return;
-    try{
-      const res = await apiCal({ action:"retirer", raidId:b.dataset.retirer, pseudo:b.dataset.pseudo, jeton:jeton() });
-      if(res.ok){ oublier(b.dataset.retirer, b.dataset.pseudo); chargerCal(); }
-      else alert(res.erreur || "Impossible de retirer l’inscription.");
-    }catch{ alert("Serveur injoignable. Réessayez dans un instant."); }
+    if(!confirm("Retirer cette inscription ?")) return;
+    const { error } = await sb.from("inscriptions").delete().eq("id", b.dataset.retirer);
+    if(error) alert(messageErreur(error)); else chargerCal();
+  }else if(b.dataset.perso){
+    const p = persoConnus[b.dataset.perso];
+    if(!p) return;
+    $("#fiche-carte").innerHTML = carteDe(p);
+    $("#dlg-fiche").showModal();
   }
 });
-
 $("#f-ins").addEventListener("submit", async e => {
   e.preventDefault();
-  const bouton = e.target.querySelector("button[type=submit]"), retour = $("#ins-retour");
-  const v = id => $("#" + id).value.trim();
+  const v = id => $("#" + id).value.trim(), bouton = e.target.querySelector("button[type=submit]"), retour = $("#ins-retour");
+  const presence = v("i-presence");
+  const ligne = { raid_id:evtCourant, personnage_id:v("i-perso"), user_id:session.user.id, role:v("i-role"), presence,
+    heure:presence === "retard" && v("i-heure") ? v("i-heure") : null, note:v("i-note") };
   bouton.disabled = true; bouton.textContent = "Envoi…";
-  try{
-    const res = await apiCal({ action:"inscrire", raidId:evtCourant, jeton:jeton(), "bot-field":v("i-piege"),
-      inscription:{ pseudo:v("i-pseudo"), classe:v("i-classe"), spe:v("i-spe"), role:v("i-role"), presence:v("i-presence"), heure:v("i-heure"), note:v("i-note") } });
-    if(res.ok){ retenir(evtCourant, v("i-pseudo")); dIns.close(); await chargerCal(); }
-    else retour.innerHTML = `<div class="msg err">${esc(res.erreur || "L’inscription a échoué. Réessayez dans un instant.")}</div>`;
-  }catch{
-    retour.innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
-  }
+  const { error } = await sb.from("inscriptions").upsert(ligne, { onConflict:"raid_id,personnage_id" });
   bouton.disabled = false; bouton.textContent = "Valider mon inscription";
+  if(error){ retour.innerHTML = `<div class="msg err">${esc(messageErreur(error))}</div>`; return; }
+  dIns.close(); chargerCal();
 });
 
 /* Formulaire */
@@ -1154,32 +1518,39 @@ $("#a-sauver").onclick = async () => {
   }
 };
 
-/* Espace Officier : calendrier et roster */
-const onglets = document.querySelectorAll(".onglets button");
-onglets.forEach(b => b.onclick = () => {
-  onglets.forEach(x => x.setAttribute("aria-pressed", x === b));
-  $("#panneau-site").hidden = b.dataset.p !== "site";
-  $("#panneau-raids").hidden = b.dataset.p !== "raids";
-  if(b.dataset.p === "raids") chargerAdminCal();
-});
-let adminEvts = [];
-async function actionCal(corps){
-  try{
-    const res = await apiCal({ code:codeOfficier, ...corps });
-    if(res.statut === 401){
-      deconnecter();
-      $("#login-retour").innerHTML = '<div class="msg err">Session expirée ou code incorrect. Reconnectez-vous.</div>';
-      return null;
-    }
-    if(!res.ok){ $("#c-retour").innerHTML = `<div class="msg err">${esc(res.erreur || "Action impossible.")}</div>`; return null; }
-    adminEvts = res.raids || []; dessinerAdminCal(); chargerCal();
-    return res;
-  }catch{
-    $("#c-retour").innerHTML = '<div class="msg err">Serveur injoignable. Réessayez dans un instant.</div>';
-    return null;
-  }
+/* Espace Officier : calendrier, roster et membres (compte officier Supabase) */
+let adminEvts = [], membres = [], ongletAdmin = "site";
+function afficherOnglet(p){
+  ongletAdmin = p;
+  document.querySelectorAll(".onglets-admin button").forEach(x => x.setAttribute("aria-pressed", x.dataset.p === p));
+  $("#panneau-site").hidden = p !== "site";
+  $("#panneau-raids").hidden = p !== "raids";
+  $("#panneau-membres").hidden = p !== "membres";
+  if(estOfficier()){ if(p === "raids") chargerAdminCal(); if(p === "membres") chargerMembres(); }
 }
-function chargerAdminCal(){ $("#c-retour").innerHTML = ""; actionCal({ action:"tout" }); }
+document.querySelectorAll(".onglets-admin button").forEach(b => b.onclick = () => afficherOnglet(b.dataset.p));
+function majAdminAcces(){
+  const off = estOfficier();
+  ["raids", "membres"].forEach(k => { $("#" + k + "-gate").hidden = off; $("#" + k + "-contenu").hidden = !off; });
+  if(off && ongletAdmin !== "site") afficherOnglet(ongletAdmin);
+}
+document.querySelectorAll(".js-ouvrir-auth").forEach(b => b.onclick = () => ouvrirAuth("connexion"));
+
+async function admErreur(error, zone){
+  if(error){ $(zone).innerHTML = `<div class="msg err">${esc(messageErreur(error))}</div>`; return true; }
+  $(zone).innerHTML = ""; return false;
+}
+async function chargerAdminCal(){
+  const { data, error } = await sb.from("raids").select(REQUETE_RAIDS).order("date_raid");
+  if(await admErreur(error, "#c-retour")) return;
+  adminEvts = (data || []).map(adapter); dessinerAdminCal();
+}
+async function actionCal(promesse){
+  const { error } = await promesse;
+  if(await admErreur(error, "#c-retour")) return false;
+  await chargerAdminCal(); planifierCal();
+  return true;
+}
 const opts = (liste, v) => liste.map(([k, t]) => `<option value="${k}"${v === k ? " selected" : ""}>${t}</option>`).join("");
 function dessinerAdminCal(){
   const tri = [...adminEvts].sort((a, b) => debutDe(a) - debutDe(b));
@@ -1191,32 +1562,57 @@ function dessinerAdminCal(){
         <button class="btn btn-ligne petit" type="button" data-suppr="${esc(r.id)}">Supprimer</button></div>
       <div class="a-ins">${r.inscriptions.map(i => `
         <div class="a-ligne" style="--cl:${couleurDe(i.classe)}">
-          <span class="a-nom"><b>${esc(i.pseudo)}</b> <small>${ROLE_ICONE[i.role] || ""} ${esc(i.spe)} ${esc(i.classe)}</small></span>
+          <span class="a-nom"><b>${esc(i.pseudo)}</b> <small>${ROLE_ICONE[i.role] || ""} ${esc(i.spe)} ${esc(i.classe)} · ${esc(i.joueur)}</small></span>
           <span class="a-pres">${PRES[i.presence] || ""}${i.heure ? " " + esc(i.heure) : ""}${i.note ? " · " + esc(i.note) : ""}</span>
-          <select data-etat="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Validation du roster pour ${esc(i.pseudo)}">${opts([["attente","En attente"],["confirme","Confirmé"],["remplacant","Remplaçant"]], i.etat)}</select>
-          <button class="x" type="button" data-retirer-adm="${esc(r.id)}" data-pseudo="${esc(i.pseudo)}" aria-label="Retirer ${esc(i.pseudo)}">✕</button>
+          <select data-etat="${esc(i.id)}" aria-label="Validation du roster pour ${esc(i.pseudo)}">${opts([["attente","En attente"],["confirme","Confirmé"],["remplacant","Remplaçant"]], i.etat)}</select>
+          <button class="x" type="button" data-retirer-adm="${esc(i.id)}" aria-label="Retirer ${esc(i.pseudo)}">✕</button>
         </div>`).join("") || "<small>Aucune inscription pour le moment.</small>"}</div>
     </div>`).join("") || '<p class="intro">Aucun raid pour le moment.</p>';
 }
 $("#a-cal").addEventListener("change", e => {
   const t = e.target;
-  if(t.dataset.statut) actionCal({ action:"statut", raidId:t.dataset.statut, statut:t.value });
-  else if(t.dataset.etat) actionCal({ action:"roster", raidId:t.dataset.etat, pseudo:t.dataset.pseudo, etat:t.value });
+  if(t.dataset.statut) actionCal(sb.from("raids").update({ statut:t.value }).eq("id", t.dataset.statut));
+  else if(t.dataset.etat) actionCal(sb.from("inscriptions").update({ etat:t.value }).eq("id", t.dataset.etat));
 });
 $("#a-cal").addEventListener("click", e => {
   const b = e.target.closest("button");
   if(!b) return;
   const d = b.dataset;
-  if(d.archiver) actionCal({ action:"archiver", raidId:d.archiver, archive:d.val === "1" });
-  else if(d.suppr){ if(confirm("Supprimer définitivement ce raid et toutes ses inscriptions ?")) actionCal({ action:"supprimer", raidId:d.suppr }); }
-  else if(d.retirerAdm){ if(confirm("Retirer " + d.pseudo + " de ce raid ?")) actionCal({ action:"retirer", raidId:d.retirerAdm, pseudo:d.pseudo }); }
+  if(d.archiver) actionCal(sb.from("raids").update({ archive:d.val === "1" }).eq("id", d.archiver));
+  else if(d.suppr){ if(confirm("Supprimer définitivement ce raid et toutes ses inscriptions ?")) actionCal(sb.from("raids").delete().eq("id", d.suppr)); }
+  else if(d.retirerAdm){ if(confirm("Retirer cette inscription ?")) actionCal(sb.from("inscriptions").delete().eq("id", d.retirerAdm)); }
 });
 $("#f-raid").addEventListener("submit", async e => {
   e.preventDefault();
-  const v = id => $("#" + id).value.trim();
-  const res = await actionCal({ action:"creer", raid:{ titre:v("c-titre"), date:v("c-date"), rassemblement:v("c-rass"), debut:v("c-debut"),
-    description:v("c-desc"), tank:v("c-tank"), soigneur:v("c-heal"), dps:v("c-dps") } });
-  if(res){ e.target.reset(); $("#c-retour").innerHTML = '<div class="msg">Raid créé : il est visible sur la page d’accueil.</div>'; }
+  const v = id => $("#" + id).value.trim(), n = id => Math.max(0, Math.min(40, parseInt(v(id), 10) || 0));
+  const ok = await actionCal(sb.from("raids").insert({ titre:v("c-titre"), date_raid:v("c-date"), rassemblement:v("c-rass"), debut:v("c-debut"),
+    description:v("c-desc"), tank:n("c-tank"), soigneur:n("c-heal"), dps:n("c-dps") }));
+  if(ok){ e.target.reset(); $("#c-retour").innerHTML = '<div class="msg">Raid créé : les membres le voient dans le calendrier.</div>'; }
+});
+
+async function chargerMembres(){
+  const { data, error } = await sb.from("profiles").select("*").order("cree_le", { ascending:false });
+  if(await admErreur(error, "#m-retour")) return;
+  membres = data || []; dessinerMembres();
+}
+function dessinerMembres(){
+  const ordre = { en_attente:0, membre:1, officier:2, refuse:3 };
+  const tri = [...membres].sort((a, b) => ordre[a.role] - ordre[b.role] || a.pseudo.localeCompare(b.pseudo));
+  const attente = membres.filter(m => m.role === "en_attente").length;
+  $("#compteur-membres").textContent = attente ? ` (${attente})` : "";
+  $("#a-membres").innerHTML = tri.map(m => `
+    <div class="a-ligne${m.role === "en_attente" ? " attente" : ""}">
+      <span class="a-nom"><b>${esc(m.pseudo)}</b> <small>inscrit le ${esc(new Date(m.cree_le).toLocaleDateString("fr-FR"))}</small></span>
+      <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">${opts([["en_attente","En attente"],["membre","Membre"],["officier","Officier"],["refuse","Refusé"]], m.role)}</select>
+    </div>`).join("") || '<p class="intro">Aucun compte pour le moment.</p>';
+}
+$("#a-membres").addEventListener("change", async e => {
+  const id = e.target.dataset.membre;
+  if(!id) return;
+  if(id === session.user.id && e.target.value !== "officier" && !confirm("Vous allez retirer vos propres droits d’officier. Continuer ?")){ dessinerMembres(); return; }
+  const { error } = await sb.from("profiles").update({ role:e.target.value }).eq("id", id);
+  if(await admErreur(error, "#m-retour")) return;
+  chargerMembres();
 });
 </script>
 </body>
