@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendrier de raid – La Légion des Anciens</title>
+<meta name="description" content="Planning des raids de La Légion des Anciens et inscriptions des membres.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="calendrier">
+
+<main id="haut">
+  <div class="page-entete"><div class="wrap">
+    <h1>Calendrier de raid</h1>
+    <p>Les prochaines soirées de la guilde, heures de France. Inscrivez votre personnage : les officiers valident ensuite la composition. Page réservée aux membres.</p>
+  </div></div>
+  <section class="page-section">
+    <div class="wrap">
+      <div class="cal" id="cal" aria-live="polite"></div>
+    </div>
+  </section>
+
+<dialog id="inscription" aria-labelledby="ins-titre">
+  <button class="fermer" type="button" aria-label="Fermer" id="ins-fermer">&times;</button>
+  <h2 id="ins-titre">S’inscrire</h2>
+  <p class="intro" style="margin-bottom:0">Les officiers valident ensuite la composition du roster.</p>
+  <form id="f-ins">
+    <div id="ins-sans-perso" hidden>
+      <p style="margin-top:1rem">Pour vous inscrire, enregistrez d’abord un personnage dans votre armurerie : il vous sera proposé automatiquement ensuite.</p>
+      <button type="button" class="btn btn-or" id="ins-creer">Créer mon personnage</button>
+    </div>
+    <div id="ins-champs">
+      <label for="i-perso">Mon personnage
+        <select id="i-perso" required></select></label>
+      <label for="i-role">Rôle pour ce raid
+        <select id="i-role" required>
+          <option value="dps">DPS (épée)</option>
+          <option value="tank">Tank (bouclier)</option>
+          <option value="soigneur">Soigneur (croix)</option>
+        </select></label>
+      <label for="i-presence">Présence
+        <select id="i-presence" required>
+          <option value="present">Présent</option>
+          <option value="retard">En retard</option>
+          <option value="absent">Absent</option>
+        </select></label>
+      <div id="i-heure-bloc" hidden>
+        <label for="i-heure">Heure d’arrivée prévue
+          <input id="i-heure" type="time"></label>
+      </div>
+      <label for="i-note">Note (facultatif)
+        <input id="i-note" maxlength="120" placeholder="Ex : disponible jusqu’à 23h30" autocomplete="off"></label>
+      <button class="btn btn-or" type="submit">Valider mon inscription</button>
+    </div>
+    <div id="ins-retour" role="status"></div>
+  </form>
+</dialog>
+</main>
+
+<script src="config.js"></script>
+<script src="commun.js"></script>
+<script src="calendrier.js"></script>
+</body>
+</html>

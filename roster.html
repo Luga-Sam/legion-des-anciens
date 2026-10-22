@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roster – La Légion des Anciens</title>
+<meta name="description" content="Les membres de La Légion des Anciens et leurs personnages.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="roster">
+
+<main id="haut">
+  <div class="page-entete"><div class="wrap">
+    <h1>Roster de la guilde</h1>
+    <p>Les membres de La Légion des Anciens et leurs personnages, présentés comme à l’Armurerie. Page réservée aux membres.</p>
+  </div></div>
+
+  <section class="page-section" id="mon-personnage" hidden>
+    <div class="wrap">
+      <h2>Mon Personnage</h2>
+      <p class="intro">Votre armurerie. Enregistrez vos personnages une seule fois : ils vous sont proposés automatiquement à chaque inscription à un raid.</p>
+      <div class="armu-barre">
+        <button type="button" class="btn btn-or petit" id="perso-ajouter">+ Ajouter un personnage</button>
+        <span class="info" id="armu-statut"></span>
+        <button type="button" class="btn btn-ligne petit" id="armu-deco">Se déconnecter</button>
+      </div>
+      <div class="persos" id="persos"></div>
+    </div>
+  </section>
+
+  <section class="page-section" id="roster">
+    <div class="wrap">
+      <h2>Les membres</h2>
+      <div class="roster-outils" id="roster-outils" hidden>
+        <input id="r-recherche" type="search" placeholder="Rechercher un joueur, un personnage, une classe…" aria-label="Rechercher">
+        <div class="filtres" id="r-filtres" role="group" aria-label="Filtrer par rôle" style="margin:0"></div>
+      </div>
+      <p class="roster-resume" id="roster-resume"></p>
+      <div id="roster-liste" aria-live="polite"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="config.js"></script>
+<script src="commun.js"></script>
+<script src="roster.js"></script>
+</body>
+</html>
