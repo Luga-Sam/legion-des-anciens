@@ -595,15 +595,18 @@ try{ codeOfficier = sessionStorage.getItem("legion_code") || ""; }catch{}
 async function api(corps){
   const r = await fetch("/api/data", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(corps) });
   let d = {}; try{ d = await r.json(); }catch{}
-  return { ok:r.ok, statut:r.status, erreur:d.erreur };
+  return { ok:r.ok, statut:r.status, erreur:d.erreur, data:d.data };
 }
+
 function afficherAdmin(connecte){
   login.hidden = connecte; tableau.hidden = !connecte;
   if(connecte) remplirAdmin(etat);
 }
+
 function optionsStatut(v){
   return Object.entries(LIBELLES).map(([k, t]) => `<option value="${k}"${k === v ? " selected" : ""}>${t}</option>`).join("");
 }
+
 function remplirAdmin(d){
   $("#a-annonce").value = d.annonce;
   $("#a-rec").innerHTML = CLASSES.map((c, ci) => `
@@ -615,6 +618,7 @@ function remplirAdmin(d){
       </div></fieldset>`).join("");
   dessinerChampsRaids(d.raids);
 }
+
 function dessinerChampsRaids(raids){
   $("#a-raids").innerHTML = raids.map((r, i) => `
     <div class="a-raid">
@@ -626,6 +630,7 @@ function dessinerChampsRaids(raids){
       <div class="pleine"><button class="btn btn-ligne petit" type="button" data-sup="${i}" style="margin-top:.6rem">Supprimer ce raid</button></div>
     </div>`).join("");
 }
+
 function lireAdmin(){
   const rec = {};
   CLASSES.forEach((c, ci) => {
@@ -634,6 +639,7 @@ function lireAdmin(){
   });
   return { annonce:$("#a-annonce").value.trim(), recrutement:rec, raids:lireRaids() };
 }
+
 function lireRaids(){
   return [...document.querySelectorAll(".a-raid")].map(el => {
     const v = f => el.querySelector(`[data-f="${f}"]`).value;
@@ -641,6 +647,7 @@ function lireRaids(){
     return { nom:v("nom").trim(), tues:Math.max(0, Math.min(total, parseInt(v("tues"), 10) || 0)), total, mention:v("mention").trim(), note:v("note").trim() };
   });
 }
+
 function deconnecter(){
   codeOfficier = "";
   try{ sessionStorage.removeItem("legion_code"); }catch{}
@@ -667,7 +674,7 @@ login.addEventListener("submit", async e => {
       retour.innerHTML = `<div class="msg err">${esc(r.statut === 401 ? "Code incorrect." : r.erreur || "Connexion impossible.")}</div>`;
     }
   }catch{
-    retour.innerHTML = '<div class="msg err">Serveur injoignable. L’Espace Officier ne fonctionne qu’une fois le site en ligne sur Cloudflare Pages.</div>';
+    retour.innerHTML = '<div class="msg err">Serveur injoignable.</div>';
   }
 });
 
@@ -698,100 +705,83 @@ $("#a-sauver").onclick = async () => {
   }
 };
 
-
-/* Espace Officier : calendrier, roster et membres (compte officier Supabase) */
-let adminEvts = [], membres = [], ongletAdmin = "site";
+/* Gestion des onglets de l'Espace Officier (Membres & Rôles) */
+let membres = [], ongletAdmin = "site";
 function afficherOnglet(p){
   ongletAdmin = p;
   document.querySelectorAll(".onglets-admin button").forEach(x => x.setAttribute("aria-pressed", x.dataset.p === p));
   $("#panneau-site").hidden = p !== "site";
   $("#panneau-raids").hidden = p !== "raids";
   $("#panneau-membres").hidden = p !== "membres";
-  if(estOfficier()){ if(p === "raids") chargerAdminCal(); if(p === "membres") chargerMembres(); }
+  if(estOfficier()){ if(p === "membres") chargerMembres(); }
 }
 document.querySelectorAll(".onglets-admin button").forEach(b => b.onclick = () => afficherOnglet(b.dataset.p));
+
 function majAdminAcces(){
   const off = estOfficier();
-  ["raids", "membres"].forEach(k => { $("#" + k + "-gate").hidden = off; $("#" + k + "-contenu").hidden = !off; });
+  ["raids", "membres"].forEach(k => { 
+    if($("#" + k + "-gate")) $("#" + k + "-gate").hidden = off; 
+    if($("#" + k + "-contenu")) $("#" + k + "-contenu").hidden = !off; 
+  });
   if(off && ongletAdmin !== "site") afficherOnglet(ongletAdmin);
 }
 document.querySelectorAll(".js-ouvrir-auth").forEach(b => b.onclick = () => ouvrirAuth("connexion"));
 
-async function admErreur(error, zone){
-  if(error){ $(zone).innerHTML = `<div class="msg err">${esc(messageErreur(error))}</div>`; return true; }
-  $(zone).innerHTML = ""; return false;
-}
-async function chargerAdminCal(){
-  const { data, error } = await sb.from("raids").select(REQUETE_RAIDS).order("date_raid");
-  if(await admErreur(error, "#c-retour")) return;
-  adminEvts = (data || []).map(adapter); dessinerAdminCal();
-}
-async function actionCal(promesse){
-  const { error } = await promesse;
-  if(await admErreur(error, "#c-retour")) return false;
-  await chargerAdminCal(); signaler("calendrier");
-  return true;
-}
-const opts = (liste, v) => liste.map(([k, t]) => `<option value="${k}"${v === k ? " selected" : ""}>${t}</option>`).join("");
-function dessinerAdminCal(){
-  const tri = [...adminEvts].sort((a, b) => debutDe(a) - debutDe(b));
-  $("#a-cal").innerHTML = tri.map(r => `
-    <div class="a-evt${r.archive ? " archive" : ""}">
-      <div class="a-evt-tete"><strong>${esc(r.titre)}</strong><span>${esc(r.date)} · ${esc(r.rassemblement)} / ${esc(r.debut)}${r.archive ? " · archivé" : ""}</span>
-        <select data-statut="${esc(r.id)}" aria-label="Statut du raid">${opts([["ouvert","Ouvert aux inscriptions"],["complet","Complet"],["annule","Annulé"]], r.statut)}</select>
-        <button class="btn btn-ligne petit" type="button" data-archiver="${esc(r.id)}" data-val="${r.archive ? "0" : "1"}">${r.archive ? "Restaurer" : "Archiver"}</button>
-        <button class="btn btn-ligne petit" type="button" data-suppr="${esc(r.id)}">Supprimer</button></div>
-      <div class="a-ins">${r.inscriptions.map(i => `
-        <div class="a-ligne" style="--cl:${couleurDe(i.classe)}">
-          <span class="a-nom"><b>${esc(i.pseudo)}</b> <small>${ROLE_ICONE[i.role] || ""} ${esc(i.spe)} ${esc(i.classe)} · ${esc(i.joueur)}</small></span>
-          <span class="a-pres">${PRES[i.presence] || ""}${i.heure ? " " + esc(i.heure) : ""}${i.note ? " · " + esc(i.note) : ""}</span>
-          <select data-etat="${esc(i.id)}" aria-label="Validation du roster pour ${esc(i.pseudo)}">${opts([["attente","En attente"],["confirme","Confirmé"],["remplacant","Remplaçant"]], i.etat)}</select>
-          <button class="x" type="button" data-retirer-adm="${esc(i.id)}" aria-label="Retirer ${esc(i.pseudo)}">✕</button>
-        </div>`).join("") || "<small>Aucune inscription pour le moment.</small>"}</div>
-    </div>`).join("") || '<p class="intro">Aucun raid pour le moment.</p>';
-}
-$("#a-cal").addEventListener("change", e => {
-  const t = e.target;
-  if(t.dataset.statut) actionCal(sb.from("raids").update({ statut:t.value }).eq("id", t.dataset.statut));
-  else if(t.dataset.etat) actionCal(sb.from("inscriptions").update({ etat:t.value }).eq("id", t.dataset.etat));
-});
-$("#a-cal").addEventListener("click", e => {
-  const b = e.target.closest("button");
-  if(!b) return;
-  const d = b.dataset;
-  if(d.archiver) actionCal(sb.from("raids").update({ archive:d.val === "1" }).eq("id", d.archiver));
-  else if(d.suppr){ if(confirm("Supprimer définitivement ce raid et toutes ses inscriptions ?")) actionCal(sb.from("raids").delete().eq("id", d.suppr)); }
-  else if(d.retirerAdm){ if(confirm("Retirer cette inscription ?")) actionCal(sb.from("inscriptions").delete().eq("id", d.retirerAdm)); }
-});
-$("#f-raid").addEventListener("submit", async e => {
-  e.preventDefault();
-  const v = id => $("#" + id).value.trim(), n = id => Math.max(0, Math.min(40, parseInt(v(id), 10) || 0));
-  const ok = await actionCal(sb.from("raids").insert({ titre:v("c-titre"), date_raid:v("c-date"), rassemblement:v("c-rass"), debut:v("c-debut"),
-    description:v("c-desc"), tank:n("c-tank"), soigneur:n("c-heal"), dps:n("c-dps") }));
-  if(ok){ e.target.reset(); $("#c-retour").innerHTML = '<div class="msg">Raid créé : les membres le voient dans le calendrier.</div>'; }
-});
-
 async function chargerMembres(){
-  const { data, error } = await sb.from("profiles").select("*").order("cree_le", { ascending:false });
-  if(await admErreur(error, "#m-retour")) return;
-  membres = data || []; dessinerMembres();
+  try {
+    const res = await fetch("/api/admin-membres", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "lister", userId: session?.user?.id })
+    });
+    const d = await res.json();
+    if(!res.ok) throw new Error(d.erreur || "Erreur de chargement");
+    membres = d.membres || [];
+    dessinerMembres();
+  } catch(err) {
+    $("#m-retour").innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+  }
 }
+
 function dessinerMembres(){
   const ordre = { en_attente:0, membre:1, officier:2, refuse:3 };
-  const tri = [...membres].sort((a, b) => ordre[a.role] - ordre[b.role] || a.pseudo.localeCompare(b.pseudo));
+  const tri = [...membres].sort((a, b) => (ordre[a.role] ?? 4) - (ordre[b.role] ?? 4) || a.pseudo.localeCompare(b.pseudo));
   const attente = membres.filter(m => m.role === "en_attente").length;
-  $("#compteur-membres").textContent = attente ? ` (${attente})` : "";
-  $("#a-membres").innerHTML = tri.map(m => `
-    <div class="a-ligne${m.role === "en_attente" ? " attente" : ""}">
-      <span class="a-nom"><b>${esc(m.pseudo)}</b> <small>inscrit le ${esc(new Date(m.cree_le).toLocaleDateString("fr-FR"))}</small></span>
-      <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">${opts([["en_attente","En attente"],["membre","Membre"],["officier","Officier"],["refuse","Refusé"]], m.role)}</select>
-    </div>`).join("") || '<p class="intro">Aucun compte pour le moment.</p>';
+  if($("#compteur-membres")) $("#compteur-membres").textContent = attente ? ` (${attente})` : "";
+  if($("#a-membres")) {
+    $("#a-membres").innerHTML = tri.map(m => `
+      <div class="a-ligne${m.role === "en_attente" ? " attente" : ""}">
+        <span class="a-nom"><b>${esc(m.pseudo)}</b> <small>inscrit le ${esc(new Date(m.cree_le).toLocaleDateString("fr-FR"))}</small></span>
+        <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">
+          <option value="en_attente"${m.role === "en_attente" ? " selected" : ""}>En attente</option>
+          <option value="membre"${m.role === "membre" ? " selected" : ""}>Membre</option>
+          <option value="officier"${m.role === "officier" ? " selected" : ""}>Officier</option>
+          <option value="refuse"${m.role === "refuse" ? " selected" : ""}>Refusé</option>
+        </select>
+      </div>`).join("") || '<p class="intro">Aucun compte pour le moment.</p>';
+  }
 }
-$("#a-membres").addEventListener("change", async e => {
-  const id = e.target.dataset.membre;
-  if(!id) return;
-  if(id === session.user.id && e.target.value !== "officier" && !confirm("Vous allez retirer vos propres droits d’officier. Continuer ?")){ dessinerMembres(); return; }
-  const { error } = await sb.from("profiles").update({ role:e.target.value }).eq("id", id);
-  if(await admErreur(error, "#m-retour")) return;
-  chargerMembres();
-});
+
+if($("#a-membres")) {
+  $("#a-membres").addEventListener("change", async e => {
+    const id = e.target.dataset.membre;
+    const nouveauRole = e.target.value;
+    if(!id) return;
+    if(id === session?.user?.id && nouveauRole !== "officier" && !confirm("Vous allez retirer vos propres droits d’officier. Continuer ?")){ 
+      dessinerMembres(); 
+      return; 
+    }
+    try {
+      const res = await fetch("/api/admin-membres", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "modifier_role", targetId: id, nouveauRole, userId: session?.user?.id })
+      });
+      const d = await res.json();
+      if(!res.ok) throw new Error(d.erreur || "Erreur lors de la mise à jour");
+      chargerMembres();
+    } catch(err) {
+      $("#m-retour").innerHTML = `<div class="msg err">${esc(err.message)}</div>`;
+    }
+  });
+}
