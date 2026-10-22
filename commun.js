@@ -296,22 +296,6 @@ function messageErreur(e){
 }
 
 /* ---------- Session et interface ---------- */
-function initSupabase(){
-  sb = supabase.createClient(SUPABASE_URL.replace(/\/$/, ""), SUPABASE_ANON_KEY);
-  sb.auth.onAuthStateChange((evt, s) => {
-    session = s;
-    if(evt === "PASSWORD_RECOVERY") ouvrirAuth("nouveau");
-    setTimeout(majSession, 0);                    // on n'appelle pas Supabase depuis son propre rappel
-  });
-  sb.auth.getSession().then(({ data }) => { session = data.session; majSession(); });
-}
-if(SB_OK){
-  const sc = document.createElement("script");
-  sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.1";
-  sc.onload = initSupabase;
-  sc.onerror = () => { sessionPrete = true; majInterface(); };
-  document.head.append(sc);
-}
 
 async function majSession(){
   profil = null; mesPersos = [];
