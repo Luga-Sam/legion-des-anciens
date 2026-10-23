@@ -20,4 +20,4 @@ database_id = "06873950-fe34-4ee7-be8c-ebff7c5a193d"
 # Retirez le # et remplacez par votre identifiant client Twitch (il n'est pas secret).
 # La clé TWITCH_CLIENT_SECRET et DISCORD_WEBHOOK_URL restent à saisir dans Cloudflare, en tant que « Secret ».
 [vars]
-# TWITCH_CLIENT_ID = "lugasam"
+TWITCH_CLIENT_ID = "lugasam"
