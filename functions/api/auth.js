@@ -71,4 +71,14 @@ export async function onRequestPost({ request, env }) {
   return reponse({ erreur: "Action non autorisée." }, 400);
 }
 
+// Gestion des requêtes GET (notamment /api/auth/moi) pour éviter l'erreur 500
+export async function onRequestGet({ request, env }) {
+  const url = new URL(request.url);
+  if (url.pathname.endsWith("/moi")) {
+    // Si le site demande l'utilisateur courant, on renvoie une session vide ou null pour l'instant
+    return reponse({ user: null });
+  }
+  return reponse({ erreur: "Méthode non autorisée." }, 405);
+}
+
 export const onRequest = () => reponse({ erreur: "Méthode non autorisée." }, 405);
