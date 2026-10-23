@@ -328,3 +328,5 @@ nav a[aria-current="page"]{color:var(--or);border-bottom:2px solid var(--or)}
 .membre-nom{display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;margin-bottom:.8rem;font:700 1.25rem var(--titre);color:var(--or-clair)}
 .membre-nom small{font:400 .95rem var(--corps);color:var(--doux)}
 #mon-personnage{scroll-margin-top:5rem}
+
+code.mdp-temp{font:700 1.1rem ui-monospace,Consolas,monospace;background:#000;color:var(--or-clair);padding:.1rem .6rem;border:1px solid var(--or);border-radius:3px;user-select:all}

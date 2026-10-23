@@ -1,0 +1,23 @@
+# =====================================================================
+#  wrangler.toml : relie le site à la base de données Cloudflare D1
+#  1) Créez la base (Cloudflare > Storage & databases > D1 > Create database > nom : legion-des-anciens)
+#  2) Copiez son « Database ID » et collez-le à la place de COLLEZ-ICI-L-IDENTIFIANT ci-dessous
+#  3) Enregistrez ce fichier à la racine de votre dépôt GitHub
+#  Ne mettez JAMAIS de mot de passe ou de clé secrète dans ce fichier : ils se règlent dans
+#  Cloudflare > votre projet Pages > Settings > Variables and Secrets.
+# =====================================================================
+name = "legion-des-anciens"
+pages_build_output_dir = "./"
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"                                  # nom utilisé par le code : ne le changez pas
+database_name = "legion-des-anciens"
+database_id = "COLLEZ-ICI-L-IDENTIFIANT"
+
+# --- Facultatif : si vous utilisez la détection du live Twitch ---------------------------------
+# Quand ce fichier est présent, il remplace les réglages « texte » saisis dans Cloudflare.
+# Retirez le # et remplacez par votre identifiant client Twitch (il n'est pas secret).
+# La clé TWITCH_CLIENT_SECRET et DISCORD_WEBHOOK_URL restent à saisir dans Cloudflare, en tant que « Secret ».
+# [vars]
+# TWITCH_CLIENT_ID = "votre-identifiant-client-twitch"

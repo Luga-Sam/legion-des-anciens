@@ -19,9 +19,12 @@ const memoire = { token: "", exp: 0, statuts: {} };
 async function obtenirToken(env, forcer) {
   const maintenant = Date.now();
   if (!forcer && memoire.token && memoire.exp > maintenant) return memoire.token;
-  if (!forcer && env.LEGION) {
-    const k = await env.LEGION.get("twitch_token", "json");
-    if (k && k.exp > maintenant) { memoire.token = k.token; memoire.exp = k.exp; return k.token; }
+  if (!forcer && env.DB) {
+    const l = await env.DB.prepare("SELECT valeur FROM parametres WHERE cle = 'twitch_token'").first();
+    try {
+      const k = l ? JSON.parse(l.valeur) : null;
+      if (k && k.exp > maintenant) { memoire.token = k.token; memoire.exp = k.exp; return k.token; }
+    } catch {}
   }
   const r = await fetch("https://id.twitch.tv/oauth2/token", {
     method: "POST",
@@ -36,7 +39,10 @@ async function obtenirToken(env, forcer) {
   const d = await r.json();
   const exp = maintenant + Math.max(60, d.expires_in - 3600) * 1000;
   memoire.token = d.access_token; memoire.exp = exp;
-  if (env.LEGION) await env.LEGION.put("twitch_token", JSON.stringify({ token: d.access_token, exp }));
+  if (env.DB) {
+    await env.DB.prepare("INSERT INTO parametres (cle, valeur) VALUES ('twitch_token', ?) ON CONFLICT(cle) DO UPDATE SET valeur = excluded.valeur, maj_le = unixepoch()")
+      .bind(JSON.stringify({ token: d.access_token, exp })).run();
+  }
   return d.access_token;
 }
 

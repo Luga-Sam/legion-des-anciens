@@ -21,12 +21,6 @@ const LANCER_AUTO   = true;
 const TWITCH_CHANNEL_NAME = "lugasam";
 const TWITCH_CHAT = true;
 
-// 1 quater. Comptes membres (Supabase) : l'adresse de votre projet et sa clé PUBLIQUE (voir le guide).
-//           Cette clé est faite pour être visible : la sécurité est assurée par les règles de la base de données.
-//           Tant que ces deux lignes sont vides, les comptes membres restent désactivés.
-const SUPABASE_URL = "";
-const SUPABASE_ANON_KEY = "";
-
 // 2. Besoins de recrutement (valeurs de départ : ensuite gérées depuis l’Espace Officier)
 //    statut : "ouvert", "ferme" ou "prio"   |   note : texte libre
 const CLASSES = [

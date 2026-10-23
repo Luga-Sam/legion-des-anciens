@@ -16,16 +16,16 @@ $("#persos").addEventListener("click", async e => {
   else if(b.dataset.supprPerso){
     const p = mesPersos.find(x => x.id === b.dataset.supprPerso);
     if(!confirm("Supprimer " + p.nom + " ? Ses inscriptions aux raids seront aussi supprimées.")) return;
-    const { error } = await sb.from("personnages").delete().eq("id", p.id);
-    if(error) return alert(messageErreur(error));
+    const r = await appel("personnages", { action:"supprimer", id:p.id });
+    if(!r.ok) return alert(messageErreur(r));
     await chargerPersos(); signaler("persos"); signaler("calendrier");
   }
 });
 $("#perso-ajouter").onclick = () => ouvrirPerso(null);
-$("#armu-deco").onclick = () => { if(sb) sb.auth.signOut(); };
+$("#armu-deco").onclick = async () => { await appel("auth/deconnexion", {}); await majSession(); };
 
 function majMonPerso(){
-  const connecte = !!(SB_OK && session && profil), a = acces();
+  const connecte = !!profil, a = acces();
   $("#mon-personnage").hidden = !connecte;
   if(!connecte) return;
   $("#armu-statut").textContent = a === "officier" ? "Compte officier" : a === "membre" ? "Compte membre validé" : a === "refuse" ? "Accès non accepté : contactez un officier" : "Compte en attente de validation par un officier";
@@ -47,10 +47,10 @@ FILTRES_ROLE.forEach(([cle, texte]) => {
 $("#r-recherche").addEventListener("input", e => { recherche = e.target.value.trim().toLowerCase(); dessinerRoster(); });
 
 async function chargerRoster(){
-  if(!sb || !estMembre()) return;
-  const { data, error } = await sb.from("profiles").select("id, pseudo, role, personnages(*)").in("role", ["membre", "officier"]).order("pseudo");
-  if(error) return;
-  membresRoster = data || [];
+  if(!estMembre()) return;
+  const r = await appel("roster");
+  if(!r.ok) return;
+  membresRoster = r.membres || [];
   dessinerRoster();
 }
 function dessinerRoster(){

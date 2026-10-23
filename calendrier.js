@@ -1,19 +1,7 @@
 /* calendrier.js : planning des raids et inscriptions (réservé aux membres validés) */
 let evts = [], evtCourant = "";
 
-let canalRT = null;
-function realtime(){
-  if(!sb) return;
-  if(estMembre() && !canalRT){
-    canalRT = sb.channel("legion")
-      .on("postgres_changes", { event:"*", schema:"public", table:"inscriptions" }, planifierCal)
-      .on("postgres_changes", { event:"*", schema:"public", table:"raids" }, planifierCal)
-      .subscribe();
-  }else if(!estMembre() && canalRT){ sb.removeChannel(canalRT); canalRT = null; }
-}
-
 document.addEventListener("legion:session", () => {
-  realtime();
   if(estMembre()) chargerCal(); else { evts = []; dessinerCal(); }
 });
 document.addEventListener("legion:calendrier", planifierCal);
@@ -21,21 +9,21 @@ document.addEventListener("legion:calendrier", planifierCal);
 let tempoCal;
 function planifierCal(){ clearTimeout(tempoCal); tempoCal = setTimeout(chargerCal, 400); }
 async function chargerCal(){
-  if(!sb || !estMembre()) return;
-  const { data, error } = await sb.from("raids").select(REQUETE_RAIDS).eq("archive", false).order("date_raid");
-  if(error) return;
-  evts = (data || []).map(adapter);
+  if(!estMembre()) return;
+  const r = await appel("raids");
+  if(!r.ok) return;
+  evts = r.raids.map(adapter);
   dessinerCal();
 }
 function carteRaid(r){
-  const ins = r.inscriptions || [], moi = session?.user.id;
+  const ins = r.inscriptions || [], moi = profil?.id;
   const actif = i => i.presence !== "absent" && i.etat !== "remplacant";
   const ligne = i => `<li style="--cl:${couleurDe(i.classe)}"><button type="button" class="lien-perso" data-perso="${esc(i.persoId)}">${esc(i.pseudo)}</button><small>${esc(i.spe)} ${esc(i.classe)}</small>`
     + (i.presence === "retard" ? `<em class="pastille">En retard${i.heure ? " " + esc(i.heure) : ""}</em>` : "")
     + (i.etat === "confirme" ? '<em class="pastille ok">Confirmé</em>' : "")
     + (i.joueur ? `<small>· ${esc(i.joueur)}</small>` : "")
     + (i.note ? `<small class="note-i">« ${esc(i.note)} »</small>` : "")
-    + (i.userId === moi ? `<button type="button" class="x" data-retirer="${esc(i.id)}" aria-label="Retirer mon inscription">✕</button>` : "")
+    + (i.membreId === moi ? `<button type="button" class="x" data-retirer="${esc(i.id)}" aria-label="Retirer mon inscription">✕</button>` : "")
     + "</li>";
   let total = 0, pleins = true;
   const blocs = ["tank", "soigneur", "dps"].map(k => {
@@ -112,8 +100,8 @@ $("#cal").addEventListener("click", async e => {
     dIns.showModal();
   }else if(b.dataset.retirer){
     if(!confirm("Retirer cette inscription ?")) return;
-    const { error } = await sb.from("inscriptions").delete().eq("id", b.dataset.retirer);
-    if(error) alert(messageErreur(error)); else chargerCal();
+    const r = await appel("raids", { action:"retirer", inscriptionId:b.dataset.retirer });
+    if(!r.ok) alert(messageErreur(r)); else chargerCal();
   }else if(b.dataset.perso){
     const p = persoConnus[b.dataset.perso];
     if(!p) return;
@@ -125,12 +113,10 @@ $("#f-ins").addEventListener("submit", async e => {
   e.preventDefault();
   const v = id => $("#" + id).value.trim(), bouton = e.target.querySelector("button[type=submit]"), retour = $("#ins-retour");
   const presence = v("i-presence");
-  const ligne = { raid_id:evtCourant, personnage_id:v("i-perso"), user_id:session.user.id, role:v("i-role"), presence,
-    heure:presence === "retard" && v("i-heure") ? v("i-heure") : null, note:v("i-note") };
   bouton.disabled = true; bouton.textContent = "Envoi…";
-  const { error } = await sb.from("inscriptions").upsert(ligne, { onConflict:"raid_id,personnage_id" });
+  const r = await appel("raids", { action:"inscrire", raidId:evtCourant, persoId:v("i-perso"), role:v("i-role"), presence, heure:v("i-heure"), note:v("i-note") });
   bouton.disabled = false; bouton.textContent = "Valider mon inscription";
-  if(error){ retour.innerHTML = `<div class="msg err">${esc(messageErreur(error))}</div>`; return; }
+  if(!r.ok){ retour.innerHTML = erreurHtml(r); return; }
   dIns.close(); chargerCal();
 });
 
