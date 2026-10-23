@@ -13,7 +13,7 @@ compatibility_date = "2026-10-01"
 [[d1_databases]]
 binding = "DB"                                  # nom utilisé par le code : ne le changez pas
 database_name = "legion-des-anciens"
-database_id = "c2795eb8-7e47-47f3-8af8-1e90637ac318"
+database_id = "COLLEZ-ICI-L-IDENTIFIANT"
 
 # --- Facultatif : si vous utilisez la détection du live Twitch ---------------------------------
 # Quand ce fichier est présent, il remplace les réglages « texte » saisis dans Cloudflare.
