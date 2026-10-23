@@ -93,6 +93,6 @@ CREATE TABLE IF NOT EXISTS tentatives (
 --  2) Remplacez l'adresse ci-dessous par la vôtre, retirez les deux « -- » au début des deux
 --     lignes, puis exécutez uniquement ces deux lignes dans la Console D1 :
 --
--- UPDATE membres SET role = 'officier' WHERE email = 'votre@email.com';
+-- UPDATE membres SET role = 'officier' WHERE email = 'samuel.toumi@gmail.com';
 -- SELECT id, email, pseudo, role FROM membres;
 -- =====================================================================
