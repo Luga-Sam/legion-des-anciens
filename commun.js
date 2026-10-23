@@ -335,22 +335,32 @@ $("#btn-deconnexion").onclick = async () => { await appel("auth/deconnexion", {}
 
 $("#f-auth").addEventListener("submit", async e => {
   e.preventDefault();
-  const retour = $("#auth-retour"), bouton = $("#au-envoi"), email = $("#au-email").value.trim(), mdp = $("#au-mdp").value;
-  bouton.disabled = true; retour.innerHTML = "";
-  const r = modeAuth === "connexion" ? await appel("auth/connexion", { email, mdp })
-          : modeAuth === "inscription" ? await appel("auth/inscription", { email, mdp, pseudo:$("#au-pseudo").value.trim() })
-          : await appel("auth/mot-de-passe", { ancien:$("#au-ancien").value, nouveau:mdp });
+  const retour = $("#auth-retour"), bouton = $("#au-envoi");
+  const email = $("#au-email").value.trim();
+  const password = $("#au-mdp").value;
+  const pseudo = $("#au-pseudo") ? $("#au-pseudo").value.trim() : "";
+
+  bouton.disabled = true; 
+  retour.innerHTML = "";
+
+  const action = modeAuth === "inscription" ? "inscription" : "connexion";
+  const r = await appel("auth", { action, email, password, pseudo });
+
   bouton.disabled = false;
-  if(!r.ok){ retour.innerHTML = erreurHtml(r); return; }
-  const etaitNouveau = modeAuth === "nouveau";
-  $("#au-mdp").value = ""; $("#au-ancien").value = "";
-  dAuth.close();
-  await majSession();
-  if(etaitNouveau) alert("Votre mot de passe a été modifié.");
+
+  if(!r.ok){ 
+    retour.innerHTML = erreurHtml(r); 
+    return; 
+  }
+
+  if (modeAuth === "inscription") {
+    retour.innerHTML = `<div class="msg">${esc(r.message || "Compte créé avec succès !")}</div>`;
+  } else {
+    dAuth.close();
+    await majSession();
+    location.reload();
+  }
 });
-$("#au-oubli").onclick = () => {
-  $("#auth-retour").innerHTML = `<div class="msg">Il n’y a pas d’e-mail de réinitialisation sur ce site : demandez à un officier sur <a href="${LIEN_DISCORD}" target="_blank" rel="noopener">notre Discord</a>. Il vous donnera un mot de passe temporaire, à changer dès votre connexion.</div>`;
-};
 
 // Les raids reçus du serveur sont déjà au bon format ; on retient seulement les fiches des personnages inscrits
 function adapter(r){
