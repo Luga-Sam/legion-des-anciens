@@ -155,7 +155,7 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
 
     <div id="panneau-membres" hidden>
       <h3>Comptes des membres</h3>
-      <p class="intro" style="margin-bottom:1rem">Les comptes se valident tout seuls : le membre confirme son adresse en cliquant sur le lien reçu par e-mail. Ici, vous pouvez changer un rôle, confirmer à la main une adresse si l’e-mail n’arrive pas, générer un mot de passe temporaire à un membre qui a oublié le sien, ou supprimer un compte.</p>
+      <p class="intro" style="margin-bottom:1rem">Les comptes se valident tout seuls : le membre confirme son adresse en cliquant sur le lien reçu par e-mail. Ici, vous pouvez changer un rôle, attribuer le grade de Chroniqueuse (droit de rédiger les chroniques, en plus de tous les droits d’un membre), confirmer à la main une adresse si l’e-mail n’arrive pas, générer un mot de passe temporaire à un membre qui a oublié le sien, ou supprimer un compte.</p>
       <div id="a-membres" class="a-ins"></div>
       <div id="m-retour" role="status"></div>
     </div>
@@ -173,6 +173,7 @@ function injecterMiseEnPage(){
     <nav id="menu" aria-label="Navigation principale">
       ${lien("index.html#presentation", "Qui sommes-nous ?", "")}
       ${lien("index.html#recrutement", "Recrutement", "")}
+      ${lien("chroniques.html", "Chroniques", "chroniques")}
       ${lien("calendrier.html", "Calendrier", "calendrier")}
       ${lien("roster.html", "Roster", "roster")}
       ${TWITCH_OK ? lien("index.html#live", "Live", "") : ""}
@@ -702,12 +703,21 @@ function dessinerMembres(){
     <div class="a-ligne${m.role === "en_attente" ? " attente" : ""}">
       <span class="a-nom"><b>${esc(m.pseudo)}</b>${m.email_verifie ? "" : ' <em class="pastille">e-mail non confirmé</em>'} <small>${esc(m.email)} · inscrit le ${esc(new Date(m.cree_le * 1000).toLocaleDateString("fr-FR"))}</small></span>
       <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">${opts([["en_attente","Sans accès"],["membre","Membre"],["officier","Officier"],["refuse","Refusé"]], m.role)}</select>
+      ${m.role === "membre" || m.role === "officier" ? `<select data-grade-membre="${esc(m.id)}" aria-label="Grade de ${esc(m.pseudo)}">${opts([["","Aucun grade"],["chroniqueuse","Chroniqueuse"]], m.grade || "")}</select>` : ""}
       ${m.email_verifie ? "" : `<button class="btn btn-ligne petit" type="button" data-verif="${esc(m.id)}">Confirmer l’e-mail</button>`}
       <button class="btn btn-ligne petit" type="button" data-reinit="${esc(m.id)}">Mot de passe temporaire</button>
       <button class="x" type="button" data-suppr-membre="${esc(m.id)}" aria-label="Supprimer le compte de ${esc(m.pseudo)}">✕</button>
     </div>`).join("") || '<p class="intro">Aucun compte pour le moment.</p>';
 }
 $("#a-membres").addEventListener("change", async e => {
+  const gid = e.target.dataset.gradeMembre;   // grade (ex. chroniqueuse) : s'ajoute au rôle sans le modifier
+  if(gid){
+    const r = await appel("membres", { action:"grade", membreId:gid, grade:e.target.value });
+    $("#m-retour").innerHTML = r.ok ? "" : erreurHtml(r);
+    await chargerMembres();
+    if(gid === profil.id) await majSession();
+    return;
+  }
   const id = e.target.dataset.membre;
   if(!id) return;
   if(id === profil.id && e.target.value !== "officier" && !confirm("Vous allez retirer vos propres droits d’officier. Continuer ?")){ dessinerMembres(); return; }
