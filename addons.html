@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Addons recommandés – La Légion des Anciens</title>
+<meta name="description" content="Les addons World of Warcraft : Forever recommandés par La Légion des Anciens : boss mods, interface, métiers et sacs.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="addons">
+
+<main id="haut">
+  <div class="page-entete"><div class="wrap">
+    <h1>Addons recommandés</h1>
+    <p>La sélection de la guilde pour raider et jouer confortablement. Les officiers tiennent cette liste à jour : installez en priorité les addons marqués « Obligatoire ».</p>
+  </div></div>
+
+  <section class="page-section">
+    <div class="wrap">
+      <div class="chro-barre" id="addons-barre" hidden>
+        <button type="button" class="btn btn-or petit" id="addon-ajouter">+ Ajouter un Addon</button>
+      </div>
+      <div id="addons-liste" aria-live="polite"><p class="intro">Chargement des addons…</p></div>
+    </div>
+  </section>
+
+<dialog id="dlg-addon" aria-labelledby="ad-titre-dlg">
+  <button class="fermer" type="button" aria-label="Fermer" id="ad-fermer">&times;</button>
+  <h2 id="ad-titre-dlg">Ajouter un Addon</h2>
+  <form id="f-addon">
+    <input type="hidden" id="ad-id">
+    <label for="ad-nom">Nom de l’addon
+      <input id="ad-nom" required minlength="2" maxlength="60" autocomplete="off" placeholder="Ex : Deadly Boss Mods"></label>
+    <label for="ad-categorie">Catégorie
+      <input id="ad-categorie" required minlength="2" maxlength="40" list="ad-categories" autocomplete="off" placeholder="Choisissez ou saisissez une catégorie">
+      <datalist id="ad-categories"></datalist></label>
+    <label for="ad-niveau">Importance
+      <select id="ad-niveau">
+        <option value="obligatoire">Obligatoire (raid)</option>
+        <option value="recommande" selected>Recommandé</option>
+        <option value="confort">Confort</option>
+      </select></label>
+    <label for="ad-description">Description (en français)
+      <textarea id="ad-description" required minlength="5" maxlength="600" style="min-height:130px" placeholder="À quoi sert l’addon et pourquoi la guilde le recommande…"></textarea></label>
+    <label for="ad-lien">Lien de téléchargement (CurseForge, GitHub, site officiel…)
+      <input id="ad-lien" type="url" required maxlength="500" autocomplete="off" placeholder="https://…"></label>
+    <button class="btn btn-or" type="submit">Enregistrer</button>
+    <div id="ad-retour" role="status"></div>
+  </form>
+</dialog>
+</main>
+
+<script src="config.js"></script>
+<script src="commun.js"></script>
+<script src="addons.js"></script>
+</body>
+</html>
