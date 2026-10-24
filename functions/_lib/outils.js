@@ -100,9 +100,10 @@ export async function detruireSession(request, env) {
 export async function membreCourant(request, env) {
   const jeton = lireCookie(request);
   if (!jeton) return null;
+  // Un compte dont l'adresse e-mail n'est pas confirmée n'a aucune session valide
   return env.DB.prepare(
     `SELECT m.id, m.email, m.pseudo, m.role, m.mdp_temporaire FROM sessions s
-     JOIN membres m ON m.id = s.membre_id WHERE s.token_hash = ? AND s.expire_le > ?`
+     JOIN membres m ON m.id = s.membre_id WHERE s.token_hash = ? AND s.expire_le > ? AND m.email_verifie = 1`
   ).bind(await sha256Hex(jeton), maintenant()).first();
 }
 export const profilPublic = m => ({ id: String(m.id), pseudo: m.pseudo, role: m.role, mdpTemporaire: !!m.mdp_temporaire });
@@ -138,3 +139,51 @@ export async function limiter(env, cle, max, fenetreSecondes) {
   return true;
 }
 export const oublierLimite = (env, cle) => env.DB.prepare("DELETE FROM tentatives WHERE cle = ?").bind(cle).run();
+
+/* ---------- Confirmation de l'adresse e-mail (envoi via Resend) ----------
+   Réglages dans Cloudflare (type « Secret ») :
+     RESEND_API_KEY     la clé API de votre compte Resend
+     EMAIL_EXPEDITEUR   l'expéditeur, ex : La Légion des Anciens <contact@votre-domaine.fr>
+                        (le domaine doit être vérifié dans Resend)
+     URL_SITE           facultatif : adresse du site, ex : https://legion.pages.dev  */
+const DUREE_VERIFICATION = 24 * 3600;
+export const emailPret = env => !!(env.RESEND_API_KEY && env.EMAIL_EXPEDITEUR);
+export const urlSite = (request, env) => (env.URL_SITE ? String(env.URL_SITE).replace(/\/+$/, "") : new URL(request.url).origin);
+const echapperHtml = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+export async function creerVerification(env, membreId) {
+  const jeton = versB64Url(crypto.getRandomValues(new Uint8Array(32)));
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM verifications WHERE membre_id = ? OR expire_le < ?").bind(membreId, maintenant()),
+    env.DB.prepare("INSERT INTO verifications (token_hash, membre_id, expire_le) VALUES (?, ?, ?)")
+      .bind(await sha256Hex(jeton), membreId, maintenant() + DUREE_VERIFICATION)
+  ]);
+  return jeton;
+}
+
+export async function envoyerEmailVerification(env, request, membre, jeton) {
+  const lien = `${urlSite(request, env)}/verify?token=${encodeURIComponent(jeton)}`;
+  const pseudo = echapperHtml(membre.pseudo);
+  const html = `<div style="font-family:Georgia,serif;background:#0c120f;padding:24px;color:#d9d6c9">
+  <div style="max-width:520px;margin:auto;border:1px solid #c9a24b;padding:28px;background:#161e1a">
+    <h1 style="color:#ecd9a2;font-size:22px;margin:0 0 16px">La Légion des Anciens</h1>
+    <p>Bonjour ${pseudo},</p>
+    <p>Pour activer votre compte, confirmez votre adresse e-mail en cliquant sur le bouton ci-dessous. Ce lien est valable 24 heures.</p>
+    <p style="text-align:center;margin:28px 0"><a href="${lien}" style="background:#c9a24b;color:#1a1002;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:2px;display:inline-block">Confirmer mon adresse</a></p>
+    <p style="font-size:13px;color:#a39f8e">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :<br>${lien}</p>
+    <p style="font-size:13px;color:#a39f8e">Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement ce message : aucun compte ne sera activé.</p>
+  </div></div>`;
+  const text = `Bonjour ${membre.pseudo},\n\nPour activer votre compte La Légion des Anciens, confirmez votre adresse e-mail avec ce lien (valable 24 heures) :\n${lien}\n\nSi vous n'êtes pas à l'origine de cette inscription, ignorez ce message.`;
+  try {
+    const r = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + env.RESEND_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: env.EMAIL_EXPEDITEUR, to: [membre.email], subject: "Confirmez votre adresse e-mail – La Légion des Anciens", html, text })
+    });
+    if (!r.ok) console.error("Resend a refusé l'envoi :", r.status, (await r.text()).slice(0, 300));
+    return r.ok;
+  } catch (e) {
+    console.error("Resend injoignable :", String(e));
+    return false;
+  }
+}

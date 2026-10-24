@@ -51,7 +51,7 @@ function dessinerCal(){
   const a = acces(), el = $("#cal");
   if(!sessionPrete){ el.innerHTML = '<p class="intro">Chargement…</p>'; return; }
   if(!estMembre()){
-    if(a === "en_attente") el.innerHTML = verrou("Votre compte est en attente de validation par un officier. Le calendrier s’ouvrira dès qu’il sera approuvé.");
+    if(a === "en_attente") el.innerHTML = verrou("Votre compte n’a pas accès à cette section pour le moment. Contactez un officier sur notre Discord.");
     else if(a === "refuse") el.innerHTML = verrou("Votre demande d’accès n’a pas été acceptée. Contactez un officier sur notre Discord.");
     else el.innerHTML = verrou("Cette section est réservée aux membres de La Légion des Anciens. Veuillez vous connecter ou créer un compte.",
       '<div class="actions"><button type="button" class="btn btn-or" data-auth="connexion">Se connecter</button><button type="button" class="btn btn-ligne" data-auth="inscription">Créer un compte</button></div>');

@@ -16,6 +16,9 @@ export async function onRequestPost({ request, env }) {
   const m = await env.DB.prepare("SELECT * FROM membres WHERE email = ?").bind(email).first();
   if (!m || !(await verifierMdp(mdp, m))) return erreur("E-mail ou mot de passe incorrect.", 401);
 
+  if (!m.email_verifie) {
+    return reponse({ erreur: "Votre adresse e-mail n'est pas encore confirmée. Ouvrez le message que nous vous avons envoyé (pensez aux courriers indésirables) ou demandez un nouvel e-mail.", emailNonVerifie: true }, 403);
+  }
   await oublierLimite(env, cleEmail);
   const jeton = await creerSession(env, m.id);
   return reponse({ ok: true, membre: profilPublic(m) }, 200, { "set-cookie": cookieSession(jeton, request) });

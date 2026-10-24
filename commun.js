@@ -59,6 +59,7 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
       <input id="au-mdp" type="password" required minlength="10" maxlength="128" autocomplete="current-password"></label>
     <button class="btn btn-or" type="submit" id="au-envoi">Se connecter</button>
     <button type="button" class="lien-bouton" id="au-oubli">Mot de passe oublié ?</button>
+    <button type="button" class="lien-bouton" id="au-renvoyer" hidden>Renvoyer l’e-mail de confirmation</button>
     <p class="intro petite" id="au-aide" style="margin:.8rem 0 0"></p>
     <div id="auth-retour" role="status"></div>
   </form>
@@ -154,7 +155,7 @@ const MODALES = `<dialog id="dlg-auth" aria-labelledby="auth-titre">
 
     <div id="panneau-membres" hidden>
       <h3>Comptes des membres</h3>
-      <p class="intro" style="margin-bottom:1rem">Les nouveaux comptes sont « en attente » : passez-les en « Membre » pour leur ouvrir le calendrier et le roster. Si un membre oublie son mot de passe, générez-lui un mot de passe temporaire.</p>
+      <p class="intro" style="margin-bottom:1rem">Les comptes se valident tout seuls : le membre confirme son adresse en cliquant sur le lien reçu par e-mail. Ici, vous pouvez changer un rôle, confirmer à la main une adresse si l’e-mail n’arrive pas, générer un mot de passe temporaire à un membre qui a oublié le sien, ou supprimer un compte.</p>
       <div id="a-membres" class="a-ins"></div>
       <div id="m-retour" role="status"></div>
     </div>
@@ -301,7 +302,7 @@ function majInterface(){
   if(profil && profil.mdpTemporaire && !dAuth.open) ouvrirAuth("nouveau");   // mot de passe temporaire : on demande d'en choisir un
 }
 majSession();
-setInterval(() => { if(document.visibilityState === "visible" && profil && !estMembre()) majSession(); }, 60000);  // détecte la validation du compte
+setInterval(() => { if(document.visibilityState === "visible" && profil && !estMembre()) majSession(); }, 60000);  // détecte un changement de rôle fait par un officier
 
 /* ---------- Fenêtre de connexion / création de compte ---------- */
 const dAuth = $("#dlg-auth");
@@ -320,7 +321,8 @@ function modeAuthSet(m){
   $("#au-mdp").autocomplete = ins || nouveau ? "new-password" : "current-password";
   $("#au-envoi").textContent = ins ? "Créer mon compte" : nouveau ? "Enregistrer le mot de passe" : "Se connecter";
   $("#au-oubli").hidden = m !== "connexion";
-  $("#au-aide").textContent = ins ? "Un officier validera votre compte avant de vous donner accès au calendrier et au roster." : nouveau ? "Votre mot de passe était temporaire : choisissez-en un nouveau pour continuer." : "";
+  $("#au-renvoyer").hidden = true;
+  $("#au-aide").textContent = ins ? "Un e-mail de confirmation vous sera envoyé : cliquez sur le lien qu’il contient pour activer votre compte." : nouveau ? "Votre mot de passe était temporaire : choisissez-en un nouveau pour continuer." : "";
   $("#auth-titre").textContent = nouveau ? "Nouveau mot de passe" : "Espace membres";
 }
 function ouvrirAuth(m = "connexion"){
@@ -336,18 +338,39 @@ $("#btn-deconnexion").onclick = async () => { await appel("auth/deconnexion", {}
 $("#f-auth").addEventListener("submit", async e => {
   e.preventDefault();
   const retour = $("#auth-retour"), bouton = $("#au-envoi"), email = $("#au-email").value.trim(), mdp = $("#au-mdp").value;
-  bouton.disabled = true; retour.innerHTML = "";
+  bouton.disabled = true; retour.innerHTML = ""; $("#au-renvoyer").hidden = true;
   const r = modeAuth === "connexion" ? await appel("auth/connexion", { email, mdp })
           : modeAuth === "inscription" ? await appel("auth/inscription", { email, mdp, pseudo:$("#au-pseudo").value.trim() })
           : await appel("auth/mot-de-passe", { ancien:$("#au-ancien").value, nouveau:mdp });
   bouton.disabled = false;
-  if(!r.ok){ retour.innerHTML = erreurHtml(r); return; }
+  if(!r.ok){
+    retour.innerHTML = erreurHtml(r);
+    if(r.emailNonVerifie) $("#au-renvoyer").hidden = false;
+    return;
+  }
+  if(modeAuth === "inscription"){
+    // Pas de connexion tout de suite : l'adresse e-mail doit d'abord être confirmée
+    retour.innerHTML = r.emailEnvoye
+      ? `<div class="msg">Compte créé ! Un e-mail de confirmation vient d’être envoyé à <b>${esc(email)}</b>. Cliquez sur le lien qu’il contient (pensez à regarder les courriers indésirables), puis connectez-vous.</div>`
+      : '<div class="msg err">Compte créé, mais l’e-mail de confirmation n’a pas pu être envoyé. Cliquez sur « Renvoyer l’e-mail de confirmation » ci-dessous.</div>';
+    $("#au-renvoyer").hidden = false;
+    return;
+  }
   const etaitNouveau = modeAuth === "nouveau";
   $("#au-mdp").value = ""; $("#au-ancien").value = "";
   dAuth.close();
   await majSession();
   if(etaitNouveau) alert("Votre mot de passe a été modifié.");
 });
+$("#au-renvoyer").onclick = async () => {
+  const retour = $("#auth-retour"), bouton = $("#au-renvoyer");
+  bouton.disabled = true;
+  const r = await appel("auth/renvoyer", { email:$("#au-email").value.trim(), mdp:$("#au-mdp").value });
+  bouton.disabled = false;
+  retour.innerHTML = !r.ok ? erreurHtml(r)
+    : r.emailEnvoye ? '<div class="msg">Nouvel e-mail envoyé. Cliquez sur le lien qu’il contient, puis connectez-vous.</div>'
+    : '<div class="msg err">L’e-mail n’a pas pu être envoyé. Réessayez dans quelques minutes ou contactez un officier sur notre Discord.</div>';
+};
 $("#au-oubli").onclick = () => {
   $("#auth-retour").innerHTML = `<div class="msg">Il n’y a pas d’e-mail de réinitialisation sur ce site : demandez à un officier sur <a href="${LIEN_DISCORD}" target="_blank" rel="noopener">notre Discord</a>. Il vous donnera un mot de passe temporaire, à changer dès votre connexion.</div>`;
 };
@@ -677,8 +700,9 @@ function dessinerMembres(){
   $("#compteur-membres").textContent = attente ? ` (${attente})` : "";
   $("#a-membres").innerHTML = tri.map(m => `
     <div class="a-ligne${m.role === "en_attente" ? " attente" : ""}">
-      <span class="a-nom"><b>${esc(m.pseudo)}</b> <small>${esc(m.email)} · inscrit le ${esc(new Date(m.cree_le * 1000).toLocaleDateString("fr-FR"))}</small></span>
-      <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">${opts([["en_attente","En attente"],["membre","Membre"],["officier","Officier"],["refuse","Refusé"]], m.role)}</select>
+      <span class="a-nom"><b>${esc(m.pseudo)}</b>${m.email_verifie ? "" : ' <em class="pastille">e-mail non confirmé</em>'} <small>${esc(m.email)} · inscrit le ${esc(new Date(m.cree_le * 1000).toLocaleDateString("fr-FR"))}</small></span>
+      <select data-membre="${esc(m.id)}" aria-label="Rôle de ${esc(m.pseudo)}">${opts([["en_attente","Sans accès"],["membre","Membre"],["officier","Officier"],["refuse","Refusé"]], m.role)}</select>
+      ${m.email_verifie ? "" : `<button class="btn btn-ligne petit" type="button" data-verif="${esc(m.id)}">Confirmer l’e-mail</button>`}
       <button class="btn btn-ligne petit" type="button" data-reinit="${esc(m.id)}">Mot de passe temporaire</button>
       <button class="x" type="button" data-suppr-membre="${esc(m.id)}" aria-label="Supprimer le compte de ${esc(m.pseudo)}">✕</button>
     </div>`).join("") || '<p class="intro">Aucun compte pour le moment.</p>';
@@ -696,7 +720,12 @@ $("#a-membres").addEventListener("click", async e => {
   const b = e.target.closest("button");
   if(!b) return;
   const zone = $("#m-retour");
-  if(b.dataset.reinit){
+  if(b.dataset.verif){
+    if(!confirm("Confirmer à la main l’adresse e-mail de ce membre ? Son compte deviendra immédiatement actif.")) return;
+    const r = await appel("membres", { action:"verifier", membreId:b.dataset.verif });
+    zone.innerHTML = r.ok ? '<div class="msg">Adresse confirmée : le membre peut se connecter.</div>' : erreurHtml(r);
+    if(r.ok) chargerMembres();
+  }else if(b.dataset.reinit){
     if(!confirm("Générer un mot de passe temporaire ? L’ancien mot de passe ne fonctionnera plus et le membre sera déconnecté.")) return;
     const r = await appel("membres", { action:"reinitialiser", membreId:b.dataset.reinit });
     zone.innerHTML = r.ok ? `<div class="msg">Mot de passe temporaire de <b>${esc(r.pseudo)}</b> : <code class="mdp-temp">${esc(r.motDePasse)}</code><br>Transmettez-le-lui en message privé : il ne sera plus affiché, et le membre devra en choisir un nouveau à sa prochaine connexion.</div>` : erreurHtml(r);

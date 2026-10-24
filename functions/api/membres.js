@@ -1,6 +1,6 @@
 // /api/membres : gestion des comptes (réservé aux officiers)
 //   GET  -> tous les comptes
-//   POST { action: "role" { membreId, role } | "reinitialiser" { membreId } | "supprimer" { membreId } }
+//   POST { action: "role" { membreId, role } | "verifier" { membreId } | "reinitialiser" { membreId } | "supprimer" { membreId } }
 import { reponse, erreur, id, lireJson, basePrete, origineOk, exigerOfficier, hacherMdp, mdpTemporaire } from "../_lib/outils.js";
 
 const ROLES_COMPTE = ["en_attente", "membre", "officier", "refuse"];
@@ -9,8 +9,8 @@ export async function onRequestGet({ request, env }) {
   const pb = basePrete(env); if (pb) return pb;
   const { echec } = await exigerOfficier(request, env);
   if (echec) return echec;
-  const { results } = await env.DB.prepare("SELECT id, email, pseudo, role, cree_le FROM membres ORDER BY cree_le DESC, id DESC").all();
-  return reponse({ membres: results.map(m => ({ ...m, id: String(m.id) })) });
+  const { results } = await env.DB.prepare("SELECT id, email, pseudo, role, email_verifie, cree_le FROM membres ORDER BY cree_le DESC, id DESC").all();
+  return reponse({ membres: results.map(m => ({ ...m, id: String(m.id), email_verifie: !!m.email_verifie })) });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -34,6 +34,14 @@ export async function onRequestPost({ request, env }) {
     if (!ROLES_COMPTE.includes(d.role)) return erreur("Rôle invalide.");
     if (d.role !== "officier" && await dernierOfficier()) return erreur("Il doit rester au moins un officier.", 409);
     await env.DB.prepare("UPDATE membres SET role = ? WHERE id = ?").bind(d.role, cible).run();
+    return reponse({ ok: true });
+  }
+  if (d.action === "verifier") {
+    // Secours : confirme à la main une adresse (par exemple si l'e-mail n'arrive jamais)
+    await env.DB.batch([
+      env.DB.prepare("UPDATE membres SET email_verifie = 1, role = CASE WHEN role = 'en_attente' THEN 'membre' ELSE role END WHERE id = ?").bind(cible),
+      env.DB.prepare("DELETE FROM verifications WHERE membre_id = ?").bind(cible)
+    ]);
     return reponse({ ok: true });
   }
   if (d.action === "reinitialiser") {

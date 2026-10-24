@@ -330,3 +330,10 @@ nav a[aria-current="page"]{color:var(--or);border-bottom:2px solid var(--or)}
 #mon-personnage{scroll-margin-top:5rem}
 
 code.mdp-temp{font:700 1.1rem ui-monospace,Consolas,monospace;background:#000;color:var(--or-clair);padding:.1rem .6rem;border:1px solid var(--or);border-radius:3px;user-select:all}
+.verif-carte{max-width:560px;margin:0 auto;text-align:center;padding:2.4rem 1.6rem;border:1px solid var(--or);background:linear-gradient(160deg,var(--pierre2),var(--pierre));display:grid;gap:1rem;justify-items:center}
+.verif-carte h2{font-size:1.7rem;margin:0}
+.verif-carte p{margin:0;max-width:44ch}
+.verif-carte.ok{border-color:#3fae7a;box-shadow:0 0 28px rgba(63,174,122,.25)}
+.verif-carte.ok h2{color:#8ce0b4}
+.verif-carte.erreur{border-color:#8a4a3c}
+.verif-carte.erreur h2{color:#e0a090}

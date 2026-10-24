@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS membres (
   mdp_sel TEXT NOT NULL,
   mdp_iter INTEGER NOT NULL DEFAULT 100000,
   mdp_temporaire INTEGER NOT NULL DEFAULT 0,
+  email_verifie INTEGER NOT NULL DEFAULT 0,
   role TEXT NOT NULL DEFAULT 'en_attente' CHECK (role IN ('en_attente','membre','officier','refuse')),
   cree_le INTEGER NOT NULL DEFAULT (unixepoch())
 );
@@ -76,3 +77,11 @@ CREATE TABLE IF NOT EXISTS tentatives (
   nb INTEGER NOT NULL,
   debut INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS verifications (
+  token_hash TEXT PRIMARY KEY,
+  membre_id INTEGER NOT NULL REFERENCES membres(id) ON DELETE CASCADE,
+  expire_le INTEGER NOT NULL,
+  cree_le INTEGER NOT NULL DEFAULT (unixepoch())
+);
+CREATE INDEX IF NOT EXISTS verifications_membre_idx ON verifications (membre_id);
