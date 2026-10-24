@@ -1,6 +1,6 @@
 /* =====================================================================
    config.js : VOS RÉGLAGES. C'est le seul fichier à modifier pour changer le lien Discord,
-   la chaîne Twitch, la musique ou les clés Supabase.
+   la chaîne Twitch, la musique ou les valeurs de départ du recrutement et de la progression.
    ===================================================================== */
 /* ============================================================
    ZONE À MODIFIER : tout ce qui change se trouve ici
