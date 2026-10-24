@@ -168,26 +168,29 @@ function injecterMiseEnPage(){
   const lien = (href, texte, page) => `<a href="${href}"${PAGE === page ? ' aria-current="page"' : ""}>${texte}</a>`;
   document.body.insertAdjacentHTML("afterbegin", `
 <header id="entete">
-  <div class="wrap">
-    <a class="logo" href="${PAGE === "accueil" ? "#haut" : "index.html"}">La Légion<span class="l2"> des Anciens</span></a>
-    <nav id="menu" aria-label="Navigation principale">
-      ${lien("index.html#presentation", "Qui sommes-nous ?", "")}
-      ${lien("index.html#recrutement", "Recrutement", "")}
-      ${lien("chroniques.html", "Chroniques", "chroniques")}
-      ${lien("calendrier.html", "Calendrier", "calendrier")}
-      ${lien("roster.html", "Roster", "roster")}
-      ${TWITCH_OK ? lien("index.html#live", "Live", "") : ""}
-      <a href="index.html?postuler" class="js-postuler">Postuler</a>
-    </nav>
-    <div class="droite">
-      <a class="tw" id="tw-badge" href="#" target="_blank" rel="noopener" hidden aria-label="Chaîne Twitch">${ICONE_TWITCH}<i class="pt" aria-hidden="true"></i><span id="tw-txt">Twitch</span></a>
-      <div class="compte" id="compte">
-        <button type="button" class="btn-compte" id="btn-connexion" hidden><span class="long">Connexion / S’inscrire</span><span class="court">Connexion</span></button>
-        <a class="btn-compte" id="btn-profil" href="roster.html#mon-personnage" hidden>${ICONE_USER}<span id="compte-pseudo"></span></a>
-        <button type="button" class="btn-compte discret" id="btn-deconnexion" hidden>Déconnexion</button>
-      </div>
-      <button type="button" class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="barre-compte"><div class="wrap">
+    <div class="compte" id="compte">
+      <button type="button" class="btn-compte" id="btn-connexion" hidden><span class="long">Connexion / S’inscrire</span><span class="court">Connexion</span></button>
+      <a class="btn-compte" id="btn-profil" href="roster.html#mon-personnage" hidden>${ICONE_USER}<span id="compte-pseudo"></span></a>
+      <button type="button" class="btn-compte discret" id="btn-deconnexion" hidden>Déconnexion</button>
     </div>
+  </div></div>
+  <div class="wrap haut">
+    <a class="embleme" href="${PAGE === "accueil" ? "#haut" : "index.html"}" aria-label="La Légion des Anciens, accueil"><img src="embleme.png" alt="Emblème de La Légion des Anciens" width="348" height="300"></a>
+    <nav id="menu" aria-label="Navigation principale">
+      <div class="nav-bloc nav-g">
+        ${lien("index.html", "Accueil", "accueil")}
+        ${lien("calendrier.html", "Calendrier", "calendrier")}
+        ${lien("roster.html", "Roster", "roster")}
+      </div>
+      <div class="nav-bloc nav-d">
+        ${lien("index.html#recrutement", "Recrutement", "")}
+        ${lien("chroniques.html", "Chroniques", "chroniques")}
+        <a class="tw" id="tw-badge" href="#" target="_blank" rel="noopener" hidden aria-label="Chaîne Twitch">${ICONE_TWITCH}<i class="pt" aria-hidden="true"></i><span id="tw-txt">Twitch</span></a>
+        <a class="ico js-discord" href="#" target="_blank" rel="noopener" aria-label="Discord de la guilde" title="Discord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm4 5.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm8 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6z"/></svg></a>
+      </div>
+    </nav>
+    <button type="button" class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
 <div class="annonce" id="annonce" hidden><div class="wrap"><strong>Annonce</strong><span id="annonce-txt"></span></div></div>`);
