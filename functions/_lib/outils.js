@@ -101,12 +101,20 @@ export async function membreCourant(request, env) {
   const jeton = lireCookie(request);
   if (!jeton) return null;
   // Un compte dont l'adresse e-mail n'est pas confirmée n'a aucune session valide
+  // « m.* » (et non une liste de colonnes) : si le site est mis en ligne avant la migration qui ajoute
+  // la colonne « grade », les connexions continuent de fonctionner (grade vaut alors simplement « »).
   return env.DB.prepare(
-    `SELECT m.id, m.email, m.pseudo, m.role, m.mdp_temporaire FROM sessions s
+    `SELECT m.* FROM sessions s
      JOIN membres m ON m.id = s.membre_id WHERE s.token_hash = ? AND s.expire_le > ? AND m.email_verifie = 1`
   ).bind(await sha256Hex(jeton), maintenant()).first();
 }
-export const profilPublic = m => ({ id: String(m.id), pseudo: m.pseudo, role: m.role, mdpTemporaire: !!m.mdp_temporaire });
+export const profilPublic = m => ({ id: String(m.id), pseudo: m.pseudo, role: m.role, grade: m.grade || "", mdpTemporaire: !!m.mdp_temporaire });
+
+/* ---------- Grades ----------
+   Le « grade » s'ajoute au rôle sans le remplacer : une chroniqueuse reste un membre à part entière
+   (armurerie, calendrier de raid, roster…) et reçoit en plus le droit de rédiger les chroniques. */
+export const GRADES = ["", "chroniqueuse"];
+export const peutRediger = m => !!m && (m.role === "officier" || (m.role === "membre" && m.grade === "chroniqueuse"));
 
 /* ---------- Contrôles d'accès ---------- */
 export async function exigerConnecte(request, env) {
@@ -117,6 +125,12 @@ export async function exigerMembre(request, env) {
   const { membre, echec } = await exigerConnecte(request, env);
   if (echec) return { echec };
   if (membre.role !== "membre" && membre.role !== "officier") return { echec: erreur("Votre compte n'est pas encore validé par un officier.", 403) };
+  return { membre };
+}
+export async function exigerRedacteur(request, env) {
+  const { membre, echec } = await exigerMembre(request, env);
+  if (echec) return { echec };
+  if (!peutRediger(membre)) return { echec: erreur("Réservé à la chroniqueuse et aux officiers.", 403) };
   return { membre };
 }
 export async function exigerOfficier(request, env) {
