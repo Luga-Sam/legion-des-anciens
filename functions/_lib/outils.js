@@ -162,18 +162,109 @@ export async function creerVerification(env, membreId) {
 }
 
 export async function envoyerEmailVerification(env, request, membre, jeton) {
-  const lien = `${urlSite(request, env)}/verify?token=${encodeURIComponent(jeton)}`;
+  const verificationUrl = `${urlSite(request, env)}/verify?token=${encodeURIComponent(jeton)}`;
   const pseudo = echapperHtml(membre.pseudo);
-  const html = `<div style="font-family:Georgia,serif;background:#0c120f;padding:24px;color:#d9d6c9">
-  <div style="max-width:520px;margin:auto;border:1px solid #c9a24b;padding:28px;background:#161e1a">
-    <h1 style="color:#ecd9a2;font-size:22px;margin:0 0 16px">La Légion des Anciens</h1>
-    <p>Bonjour ${pseudo},</p>
-    <p>Pour activer votre compte, confirmez votre adresse e-mail en cliquant sur le bouton ci-dessous. Ce lien est valable 24 heures.</p>
-    <p style="text-align:center;margin:28px 0"><a href="${lien}" style="background:#c9a24b;color:#1a1002;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:2px;display:inline-block">Confirmer mon adresse</a></p>
-    <p style="font-size:13px;color:#a39f8e">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :<br>${lien}</p>
-    <p style="font-size:13px;color:#a39f8e">Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement ce message : aucun compte ne sera activé.</p>
-  </div></div>`;
-  const text = `Bonjour ${membre.pseudo},\n\nPour activer votre compte La Légion des Anciens, confirmez votre adresse e-mail avec ce lien (valable 24 heures) :\n${lien}\n\nSi vous n'êtes pas à l'origine de cette inscription, ignorez ce message.`;
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue chez La Légion des Anciens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 30px 10px; background-color: #0b0b0d; font-family: 'Cinzel', Georgia, serif; color: #e5e5e5; -webkit-font-smoothing: antialiased;">
+
+  <!-- Conteneur principal style UI World of Warcraft -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 620px; margin: 0 auto; background-color: #121216; border: 2px solid #c9b037; border-radius: 6px; box-shadow: 0 0 25px rgba(201, 176, 55, 0.25);">
+
+    <!-- En-tête / Header -->
+    <tr>
+      <td style="padding: 35px 25px 25px 25px; text-align: center; border-bottom: 2px solid #2a2a35; background-color: #1a1a24; background: linear-gradient(180deg, #1a1a24 0%, #121216 100%);">
+        <h1 style="margin: 0; font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif; font-size: 24px; font-weight: 700; color: #f3e5ab; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 6px rgba(0,0,0,0.9);">
+          🛡️ La Légion des Anciens
+        </h1>
+        <p style="margin: 10px 0 0 0; font-family: 'Cinzel', Georgia, serif; font-size: 11px; font-weight: 600; color: #7289da; text-transform: uppercase; letter-spacing: 1.5px;">
+          Guilde PvE World of Warcraft : Forever — Alliance
+        </p>
+      </td>
+    </tr>
+
+    <!-- Corps du message -->
+    <tr>
+      <td style="padding: 30px 25px; font-family: 'Cinzel', Georgia, serif; font-size: 14px; line-height: 1.7; color: #d1d1d1;">
+
+        <p style="margin-top: 0; font-size: 15px;">
+          Bonjour <strong style="color: #f3e5ab; font-weight: 700;">${pseudo}</strong>,
+        </p>
+
+        <p>
+          C'est avec une grande joie que nous t'accueillons officiellement aux portes de <strong style="color: #ffffff;">La Légion des Anciens</strong> ! Ton compte a bien été créé, et il ne te reste plus qu'une dernière étape pour valider ton inscription et prêter serment :
+        </p>
+
+        <!-- Bouton d'activation -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 32px 0;">
+          <tr>
+            <td align="center">
+              <a href="${verificationUrl}" target="_blank" style="display: inline-block; background-color: #c9b037; background: linear-gradient(180deg, #c9b037 0%, #8c7323 100%); color: #0a0a0d; text-decoration: none; font-family: 'Cinzel', Georgia, serif; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; padding: 15px 30px; border-radius: 4px; border: 1px solid #ffd700; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">
+                Valider mon e-mail et activer mon compte
+              </a>
+            </td>
+          </tr>
+        </table>
+
+        <p style="font-size: 13px; color: #9e9e9e;">
+          Une fois ton passeport validé, tu pourras te connecter au site de la guilde, accéder au calendrier secret des raids, enregistrer ton personnage façon <em>Armurerie</em> et t'inscrire pour nos prochaines soirées épiques.
+        </p>
+
+        <!-- Lien de secours en texte clair pour compatibilité -->
+        <p style="font-size: 12px; color: #7a7a8c; word-break: break-all; margin-top: 15px;">
+          Si le bouton ne fonctionne pas, copie cette adresse dans votre navigateur :<br>
+          <a href="${verificationUrl}" style="color: #c9b037; text-decoration: underline;">${verificationUrl}</a>
+        </p>
+
+        <!-- Séparateur ornemental -->
+        <div style="height: 1px; background-color: #c9b037; background: linear-gradient(90deg, transparent, #c9b037, transparent); margin: 30px 0;"></div>
+
+        <!-- Section Foyer -->
+        <h3 style="margin: 0 0 12px 0; font-family: 'Cinzel', Georgia, serif; font-size: 15px; font-weight: 700; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px;">
+          🍻 Un petit mot sur notre foyer
+        </h3>
+        <p style="margin: 0 0 24px 0; font-size: 13px; color: #b0b0b0; line-height: 1.6;">
+          Chez nous, pas de course au PvE hardcore ou de pression inutile : nous sommes une communauté de vétérans (moyenne d'âge 30-40 ans) qui voulons retrouver l'ambiance chaleureuse, l'entraide et les bons moments du WoW d'autrefois. L'IRL passera toujours avant le jeu !
+        </p>
+
+        <!-- Section Étapes -->
+        <h3 style="margin: 0 0 12px 0; font-family: 'Cinzel', Georgia, serif; font-size: 15px; font-weight: 700; color: #f3e5ab; text-transform: uppercase; letter-spacing: 1px;">
+          🧭 Tes prochains pas :
+        </h3>
+        <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #b0b0b0; line-height: 1.9;">
+          <li><strong style="color: #e5e5e5;">Valide ton e-mail</strong> en cliquant sur le bouton ci-dessus.</li>
+          <li><strong style="color: #e5e5e5;">Rejoins-nous sur Discord</strong> pour faire connaissance : <a href="https://discord.com/invite/ks68MWK756" target="_blank" style="color: #7289da; text-decoration: underline; font-weight: 600;">Rejoindre le Discord</a></li>
+          <li><strong style="color: #e5e5e5;">Connecte-toi au site</strong> pour configurer ta fiche personnage.</li>
+        </ol>
+
+      </td>
+    </tr>
+
+    <!-- Pied de page / Footer -->
+    <tr>
+      <td style="padding: 22px 25px; text-align: center; border-top: 1px solid #2a2a35; background-color: #0d0d10; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;">
+        <p style="margin: 0 0 8px 0; font-style: italic; font-size: 12px; color: #8a8a8a;">
+          "Que la lumière d'Elune et la force de l'Alliance guident tes pas en Azeroth !"
+        </p>
+        <p style="margin: 0; font-family: 'Cinzel', Georgia, serif; font-size: 12px; font-weight: 700; color: #f3e5ab;">
+          L'équipe des Officiers – La Légion des Anciens
+        </p>
+      </td>
+    </tr>
+
+  </table>
+
+</body>
+</html>`;
+  const text = `Bonjour ${membre.pseudo},\n\nPour activer votre compte La Légion des Anciens, confirmez votre adresse e-mail avec ce lien (valable 24 heures) :\n${verificationUrl}\n\nSi vous n'êtes pas à l'origine de cette inscription, ignorez ce message.`;
   try {
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
