@@ -412,3 +412,111 @@ code.mdp-temp{font:700 1.1rem ui-monospace,Consolas,monospace;background:#000;co
 .ch-apercu{max-height:50vh;overflow:auto;padding:1.2rem 1.4rem}
 .ch-apercu[hidden],#ch-contenu[hidden]{display:none}
 dialog code{font:.9rem ui-monospace,Consolas,monospace;background:#000;color:var(--or-clair);padding:.05rem .35rem;border-radius:3px}
+
+/* =====================================================================
+   THEME WOW : interface « pierre et or ». À COLLER TOUT EN BAS de style.css
+   ===================================================================== */
+:root{
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .75  0 0 0 0 .65  0 0 0 0 .45  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --laiton:linear-gradient(135deg,#f6e2a0 0%,#c9a24b 28%,#7a5c22 52%,#d9b45a 78%,#8a6a2c 100%);
+  --cuir:linear-gradient(160deg,#272016,#14100b);
+  --metal:#8a6a2c;
+}
+
+/* ---------- Titres : or brillant avec ombre ---------- */
+h2{color:#f0cf86;text-shadow:0 2px 0 #000,0 0 18px rgba(224,180,92,.3)}
+h3{text-shadow:0 2px 0 rgba(0,0,0,.8)}
+
+/* ---------- En-tête : pierre sculptée, liserés dorés ---------- */
+header#entete{position:sticky;top:0;z-index:40;border:0;border-image:none;border-bottom:3px solid #b08a3a;backdrop-filter:none;
+  background:var(--grain),linear-gradient(180deg,#2a241a 0%,#16130d 55%,#0d0b08 100%);
+  box-shadow:inset 0 -1px 0 #f0cf86,inset 0 -3px 0 #000,0 8px 22px rgba(0,0,0,.75)}
+header#entete .wrap{display:block;height:auto}
+.barre-compte{background:rgba(0,0,0,.4);border-bottom:1px solid rgba(201,162,75,.3)}
+header#entete .barre-compte .wrap{display:flex;justify-content:flex-end;align-items:center;padding:.25rem 0}
+.barre-compte .compte{margin:0;padding:.18rem .55rem;border:2px solid transparent;border-radius:4px;
+  background:linear-gradient(#1c170f,#100d08) padding-box,var(--laiton) border-box;
+  box-shadow:inset 0 1px 0 rgba(255,235,170,.25),inset 0 -2px 0 rgba(0,0,0,.6),0 2px 6px rgba(0,0,0,.6)}
+.barre-compte .btn-compte{border-radius:3px;border-color:rgba(201,162,75,.5)}
+
+header#entete .haut{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:1.2rem;height:4.6rem;width:min(1500px,100% - 2rem)}
+header#entete #menu{display:contents}
+.nav-bloc{display:flex;align-items:center}
+.nav-g{grid-column:1;grid-row:1;justify-self:end}
+.nav-d{grid-column:3;grid-row:1;justify-self:start}
+.nav-bloc a{font:700 .95rem var(--titre);letter-spacing:.12em;text-transform:uppercase;color:var(--or-clair);text-decoration:none;
+  padding:.35rem 1.1rem;text-shadow:0 2px 0 #000;border-bottom:2px solid transparent}
+.nav-bloc a+a{border-left:1px solid rgba(201,162,75,.35)}
+.nav-bloc a:hover{color:#fff;text-shadow:0 0 12px rgba(224,180,92,.8),0 2px 0 #000}
+header#entete .nav-bloc a[aria-current="page"]{color:var(--or);border-bottom:2px solid var(--or)}
+.nav-bloc .tw{border-radius:0;border:0;border-left:1px solid rgba(201,162,75,.35);background:none;color:var(--twitch-clair);
+  font:700 .95rem var(--titre);letter-spacing:.12em;text-transform:uppercase;padding:.35rem 1.1rem}
+.nav-bloc .tw:hover{background:none;color:#fff}
+.nav-bloc .tw.live{color:#fff;background:rgba(224,58,58,.25);border-radius:3px}
+.nav-bloc .tw .long{display:none}
+.nav-bloc .ico{display:inline-flex;align-items:center;padding:.35rem .9rem}
+.nav-bloc .ico svg{width:1.35rem;height:1.35rem;fill:currentColor}
+
+/* Emblème central : un médaillon qui déborde sous la barre */
+header#entete .embleme{grid-column:2;grid-row:1;position:relative;z-index:5;display:block;width:9rem;height:4.6rem}
+header#entete .embleme img{position:absolute;left:50%;top:50%;translate:-50% -46%;height:9rem;width:auto;max-width:none;
+  filter:drop-shadow(0 5px 6px rgba(0,0,0,.85)) drop-shadow(0 0 14px rgba(201,162,75,.35));transition:filter .3s,scale .3s}
+header#entete .embleme:hover img{scale:1.04;filter:drop-shadow(0 5px 6px rgba(0,0,0,.85)) drop-shadow(0 0 22px rgba(240,207,134,.7))}
+.hero{min-height:calc(100vh - 7.5rem)}
+html{scroll-padding-top:8rem}
+
+/* Petits écrans : menu déroulant */
+@media(max-width:1300px){
+  header#entete .haut{height:3.8rem}
+  header#entete .embleme{width:6.4rem;height:3.8rem}
+  header#entete .embleme img{height:6.6rem}
+  header#entete .burger{display:inline-flex;grid-column:3;grid-row:1;justify-self:end;background:rgba(0,0,0,.4);border-color:#8a6a2c}
+  header#entete #menu{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;padding:.4rem 1.25rem 1rem;
+    background:var(--grain),linear-gradient(#1b160e,#0d0b08);border-bottom:3px solid #b08a3a;box-shadow:0 12px 24px rgba(0,0,0,.7)}
+  header#entete.ouvert #menu{display:flex}
+  .nav-bloc{flex-direction:column;align-items:stretch;justify-self:auto}
+  .nav-bloc a,.nav-bloc .tw{padding:.85rem 0;border-left:0;border-bottom:1px solid var(--ligne);font-size:1rem}
+  .nav-bloc a+a{border-left:0}
+  .nav-bloc .tw .long{display:none}
+  .nav-bloc .ico{padding:.85rem 0}
+  .nav-bloc .tw:not(.live) #tw-txt{display:inline}
+}
+@media(max-width:520px){ .hero{min-height:calc(100vh - 6rem)} html{scroll-padding-top:6.5rem} }
+
+/* ---------- Cadres de contenu : cuir sombre, bordure biseautée, coins ornés ---------- */
+.bloc,.resume,.carte,.raid,.evt,.perso,.tw-cadre{position:relative;border:2px solid var(--metal);border-image:none;
+  background:var(--grain),var(--cuir);
+  box-shadow:inset 1px 1px 0 rgba(255,225,150,.35),inset -1px -1px 0 rgba(0,0,0,.85),inset 0 0 0 3px #17130c,inset 0 0 0 4px #5a4420,inset 0 0 34px rgba(0,0,0,.55),0 6px 18px rgba(0,0,0,.55)}
+.bloc{border-left:4px solid var(--elfe)}
+.bloc:nth-child(3n+2){border-left-color:var(--hurle)}
+.bloc:nth-child(3n){border-left-color:var(--forge)}
+.bloc.non{border-left-color:var(--rouge)}
+.bloc.large{border-left-color:var(--elfe)}
+.carte{border-top:3px solid var(--cl)}
+.evt{border-top:3px solid var(--hurle)}
+.perso{border-left:4px solid var(--cl);
+  background:var(--grain),radial-gradient(120% 140% at 0% 0%,var(--glow),transparent 60%),var(--cuir)}
+.tw-cadre{border-top:3px solid var(--twitch)}
+.resume{border-color:#b08a3a}
+
+/* Ornements : équerres dorées et rivets de bronze aux quatre coins */
+.bloc::before,.resume::before,.carte::before,.raid::before,.evt::before,.perso::before,.tw-cadre::before{
+  content:"";position:absolute;inset:3px;pointer-events:none;z-index:2;
+  background:
+    radial-gradient(circle,#f6e2a0 0 1.5px,#8a6a2c 1.5px 3px,transparent 3.6px) left top/11px 11px no-repeat,
+    radial-gradient(circle,#f6e2a0 0 1.5px,#8a6a2c 1.5px 3px,transparent 3.6px) right top/11px 11px no-repeat,
+    radial-gradient(circle,#f6e2a0 0 1.5px,#8a6a2c 1.5px 3px,transparent 3.6px) left bottom/11px 11px no-repeat,
+    radial-gradient(circle,#f6e2a0 0 1.5px,#8a6a2c 1.5px 3px,transparent 3.6px) right bottom/11px 11px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) left top/20px 2px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) left top/2px 20px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) right top/20px 2px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) right top/2px 20px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) left bottom/20px 2px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) left bottom/2px 20px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) right bottom/20px 2px no-repeat,
+    linear-gradient(#c9a24b,#c9a24b) right bottom/2px 20px no-repeat}
+
+/* ---------- Lecteur de l'hymne : contour laiton ---------- */
+.lecteur{border:3px solid transparent;
+  background:linear-gradient(#1c170f,#0e0b07) padding-box,var(--laiton) border-box;
+  box-shadow:inset 0 1px 0 rgba(255,235,170,.25),inset 0 -2px 0 rgba(0,0,0,.6),0 6px 24px rgba(0,0,0,.7)}
