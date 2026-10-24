@@ -182,6 +182,7 @@ function injecterMiseEnPage(){
         ${lien("index.html", "Accueil", "accueil")}
         ${lien("calendrier.html", "Calendrier", "calendrier")}
         ${lien("roster.html", "Roster", "roster")}
+        ${lien("addons.html", "Addons", "addons")}
       </div>
       <div class="nav-bloc nav-d">
         ${lien("index.html#recrutement", "Recrutement", "")}
